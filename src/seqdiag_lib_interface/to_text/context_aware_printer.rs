@@ -47,17 +47,28 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
     ) -> String {
         match operator {
             HibouOperators::Strict => "strict".to_owned(),
-            HibouOperators::Alt => "strict".to_owned(),
+            HibouOperators::Alt => "alt".to_owned(),
             HibouOperators::Loop(loop_kind) => {
                 match loop_kind {
                     LoopKind::Coreg(cr) => {
                         if cr.is_empty() {
                             "loopW".to_owned()
                         } else {
-                            let conc_lfs : Vec<String> = cr.iter().map(
-                                |lf_id| self.get_lf_name(*lf_id).unwrap().to_owned()
-                            ).collect();
-                            format!("loopC({})", conc_lfs.join(","))
+                            let involved = {
+                                let unique_sub_int = sub_ints.first().unwrap();
+                                let as_interaction : Interaction = FromInternalRepresentationToInteractionTerm::<HibouLangCioII>::from_io_repr(
+                                    unique_sub_int
+                                );
+                                as_interaction.involved_lifelines()
+                            };
+                            if involved.iter().all(|lf_id| cr.contains(lf_id)) {
+                                "loopP".to_owned()
+                            } else {
+                                let conc_lfs : Vec<String> = cr.iter().map(
+                                    |lf_id| self.get_lf_name(*lf_id).unwrap().to_owned()
+                                ).collect();
+                                format!("loopC({})", conc_lfs.join(","))
+                            }
                         }
                     },
                     LoopKind::HHeadFirstWS =>"loopH".to_owned(),
