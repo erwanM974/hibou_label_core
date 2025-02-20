@@ -20,23 +20,23 @@ limitations under the License.
 
 use simple_term_rewriter::builtin_trs::rules::factorize::DistributivityChecker;
 
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
 pub struct HibouDistributivityChecker {}
 
 
-impl DistributivityChecker<HibouLangOperators> for HibouDistributivityChecker {
-    fn is_binary(&self, op : &HibouLangOperators) -> bool {
+impl DistributivityChecker<HibouRewritableLangOperator> for HibouDistributivityChecker {
+    fn is_binary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 2
     }
 
-    fn is_left_distributive_over(&self, op1 : &HibouLangOperators, op2 : &HibouLangOperators) -> bool {
+    fn is_left_distributive_over(&self, op1 : &HibouRewritableLangOperator, op2 : &HibouRewritableLangOperator) -> bool {
         op1.left_and_right_distributes_over(op2)
     }
 
-    fn is_right_distributive_over(&self, op1 : &HibouLangOperators, op2 : &HibouLangOperators) -> bool {
+    fn is_right_distributive_over(&self, op1 : &HibouRewritableLangOperator, op2 : &HibouRewritableLangOperator) -> bool {
         op1.left_and_right_distributes_over(op2)
     }
 }

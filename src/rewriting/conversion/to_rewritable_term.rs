@@ -18,37 +18,37 @@ limitations under the License.
 
 use simple_term_rewriter::core::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm;
 
-use crate::{core::syntax::interaction::Interaction, rewriting::lang::HibouLangOperators};
+use crate::{core::syntax::interaction::Interaction, rewriting::lang::HibouRewritableLangOperator};
 
 
 
-impl FromDomainSpecificTermToRewritableTerm<HibouLangOperators> for Interaction {
+impl FromDomainSpecificTermToRewritableTerm<HibouRewritableLangOperator> for Interaction {
 
-    fn get_operator_at_root(&self) -> HibouLangOperators {
+    fn get_operator_at_root(&self) -> HibouRewritableLangOperator {
         match self {
             Interaction::Strict(_,_) => {
-                HibouLangOperators::Strict
+                HibouRewritableLangOperator::Strict
             },
             Interaction::Alt(_,_) => {
-                HibouLangOperators::Alt
+                HibouRewritableLangOperator::Alt
             },
             Interaction::CoReg(cr,_,_) => {
-                HibouLangOperators::CoReg(cr.clone())
+                HibouRewritableLangOperator::CoReg(cr.clone())
             },
             Interaction::Loop(lk,_) => {
-                HibouLangOperators::Loop(lk.clone())
+                HibouRewritableLangOperator::Loop(lk.clone())
             },
             Interaction::And(_,_) => {
-                HibouLangOperators::And
+                HibouRewritableLangOperator::And
             }
             Interaction::Empty => {
-                HibouLangOperators::Empty
+                HibouRewritableLangOperator::Empty
             },
             Interaction::Emission(emission_action) => {
-                HibouLangOperators::Emission(emission_action.clone())
+                HibouRewritableLangOperator::Emission(emission_action.clone())
             },
             Interaction::Reception(reception_action) => {
-                HibouLangOperators::Reception(reception_action.clone())
+                HibouRewritableLangOperator::Reception(reception_action.clone())
             },
         }
     }

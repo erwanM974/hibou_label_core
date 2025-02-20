@@ -23,7 +23,7 @@ use simple_term_rewriter::{builtin_trs::rules::reorder_commute::CommutativeCheck
 
 use crate::core::syntax::interaction::Interaction;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 use crate::rewriting::lang_ord::compare_hibou_lang_operators;
 
 
@@ -34,18 +34,18 @@ pub struct HibouCommutativeCheckerAndOrderer {
 }
 
 
-impl CommutativeCheckerAndOrderer<HibouLangOperators> for HibouCommutativeCheckerAndOrderer {
+impl CommutativeCheckerAndOrderer<HibouRewritableLangOperator> for HibouCommutativeCheckerAndOrderer {
     fn may_commute_under(
         &self,
-        parent_op :&HibouLangOperators,
-        left_sub_term : &LanguageTerm<HibouLangOperators>,
-        right_sub_term : &LanguageTerm<HibouLangOperators>,
+        parent_op :&HibouRewritableLangOperator,
+        left_sub_term : &LanguageTerm<HibouRewritableLangOperator>,
+        right_sub_term : &LanguageTerm<HibouRewritableLangOperator>,
     ) -> bool {
         match parent_op {
-            HibouLangOperators::Alt => {
+            HibouRewritableLangOperator::Alt => {
                 self.consider_alt
             },
-            HibouLangOperators::CoReg(cr) => {
+            HibouRewritableLangOperator::CoReg(cr) => {
                 if self.consider_coreg {
                     let i1 = Interaction::from_rewritable_term(
                         left_sub_term
@@ -68,28 +68,28 @@ impl CommutativeCheckerAndOrderer<HibouLangOperators> for HibouCommutativeChecke
 
     fn compare_operators(
         &self,
-        op1 : &HibouLangOperators,
-        op2 : &HibouLangOperators
+        op1 : &HibouRewritableLangOperator,
+        op2 : &HibouRewritableLangOperator
     ) -> std::cmp::Ordering {
         compare_hibou_lang_operators(op1,op2)
     }
 
     fn get_arity(
         &self,
-        op : &HibouLangOperators
+        op : &HibouRewritableLangOperator
     ) -> usize {
         op.arity()
     }
     
     fn is_a_binary_operator_we_may_consider(
         &self,
-        op : &HibouLangOperators
+        op : &HibouRewritableLangOperator
     ) -> bool {
         match op {
-            HibouLangOperators::Alt => {
+            HibouRewritableLangOperator::Alt => {
                 self.consider_alt
             },
-            HibouLangOperators::CoReg(_) => {
+            HibouRewritableLangOperator::CoReg(_) => {
                 self.consider_coreg
             }   
             _ => {
@@ -100,7 +100,7 @@ impl CommutativeCheckerAndOrderer<HibouLangOperators> for HibouCommutativeChecke
     
     fn is_associative(
         &self,
-        op : &HibouLangOperators
+        op : &HibouRewritableLangOperator
     ) -> bool {
         op.is_binary_associative()
     }

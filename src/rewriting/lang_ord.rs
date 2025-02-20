@@ -18,43 +18,43 @@ limitations under the License.
 
 use std::cmp::Ordering;
 
-use super::lang::HibouLangOperators;
+use super::lang::HibouRewritableLangOperator;
 
 
 
-pub fn compare_hibou_lang_operators(op1: &HibouLangOperators, op2: &HibouLangOperators) -> Ordering {
+pub fn compare_hibou_lang_operators(op1: &HibouRewritableLangOperator, op2: &HibouRewritableLangOperator) -> Ordering {
     match (op1,op2) {
-        (HibouLangOperators::Empty,HibouLangOperators::Empty) => {
+        (HibouRewritableLangOperator::Empty,HibouRewritableLangOperator::Empty) => {
             Ordering::Equal
         },
-        (HibouLangOperators::Empty,_) => {
+        (HibouRewritableLangOperator::Empty,_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Empty) => {
+        (_,HibouRewritableLangOperator::Empty) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::Emission(em1),HibouLangOperators::Emission(em2)) => {
+        (HibouRewritableLangOperator::Emission(em1),HibouRewritableLangOperator::Emission(em2)) => {
             em1.cmp(em2)
         },
-        (HibouLangOperators::Emission(_),_) => {
+        (HibouRewritableLangOperator::Emission(_),_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Emission(_)) => {
+        (_,HibouRewritableLangOperator::Emission(_)) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::Reception(rc1),HibouLangOperators::Reception(rc2)) => {
+        (HibouRewritableLangOperator::Reception(rc1),HibouRewritableLangOperator::Reception(rc2)) => {
             rc1.cmp(rc2)
         },
-        (HibouLangOperators::Reception(_),_) => {
+        (HibouRewritableLangOperator::Reception(_),_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Reception(_)) => {
+        (_,HibouRewritableLangOperator::Reception(_)) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::CoReg(cr1),HibouLangOperators::CoReg(cr2)) => {
+        (HibouRewritableLangOperator::CoReg(cr1),HibouRewritableLangOperator::CoReg(cr2)) => {
             let max_cr_len = cr1.len().max(cr2.len());
             for i in 0..max_cr_len {
                 match (cr1.get(i) ,cr2.get(i) ) {
@@ -77,40 +77,40 @@ pub fn compare_hibou_lang_operators(op1: &HibouLangOperators, op2: &HibouLangOpe
             }
             Ordering::Equal
         },
-        (HibouLangOperators::CoReg(_),_) => {
+        (HibouRewritableLangOperator::CoReg(_),_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::CoReg(_)) => {
+        (_,HibouRewritableLangOperator::CoReg(_)) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::Strict,HibouLangOperators::Strict) => {
+        (HibouRewritableLangOperator::Strict,HibouRewritableLangOperator::Strict) => {
             Ordering::Equal
         },
-        (HibouLangOperators::Strict,_) => {
+        (HibouRewritableLangOperator::Strict,_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Strict) => {
+        (_,HibouRewritableLangOperator::Strict) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::Alt,HibouLangOperators::Alt) => {
+        (HibouRewritableLangOperator::Alt,HibouRewritableLangOperator::Alt) => {
             Ordering::Equal
         },
-        (HibouLangOperators::Alt,_) => {
+        (HibouRewritableLangOperator::Alt,_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Alt) => {
+        (_,HibouRewritableLangOperator::Alt) => {
             Ordering::Greater
         },
         // ***
-        (HibouLangOperators::Loop(k1),HibouLangOperators::Loop(k2)) => {
+        (HibouRewritableLangOperator::Loop(k1),HibouRewritableLangOperator::Loop(k2)) => {
             k1.cmp(k2)
         },
-        (HibouLangOperators::Loop(_),_) => {
+        (HibouRewritableLangOperator::Loop(_),_) => {
             Ordering::Less
         },
-        (_,HibouLangOperators::Loop(_)) => {
+        (_,HibouRewritableLangOperator::Loop(_)) => {
             Ordering::Greater
         },
         /*(Interaction::Sync(self_acts,self_i1,self_i2),Interaction::Sync(other_acts,other_i1,other_i2)) => {
@@ -151,7 +151,7 @@ pub fn compare_hibou_lang_operators(op1: &HibouLangOperators, op2: &HibouLangOpe
         (_,Interaction::Sync(_,_,_)) => {
             return Ordering::Greater;
         },*/
-        (HibouLangOperators::And,HibouLangOperators::And) => {
+        (HibouRewritableLangOperator::And,HibouRewritableLangOperator::And) => {
             Ordering::Equal
         }
     }

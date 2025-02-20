@@ -33,7 +33,7 @@ use simple_term_rewriter::process::step::RewriteStepKind;
 use crate::commons::hibou_color_palette::{HCP_Black, HCP_StandardRed};
 use crate::commons::util::new_image_with_colored_text;
 use crate::commons::{DRAWING_GRAPHIC_FONT, SCALE};
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
@@ -48,12 +48,12 @@ impl HibouRewritingAllTheRestDrawer {
     }
 }
 
-impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouLangOperators>> for HibouRewritingAllTheRestDrawer {
+impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingAllTheRestDrawer {
 
     fn get_step_node_inner_style_and_draw_if_needed(
         &self,
-        context_and_param: &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        step : &RewriteStepKind<HibouLangOperators>,
+        context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        step : &RewriteStepKind<HibouRewritableLangOperator>,
         full_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
         let line = match step {
@@ -93,15 +93,15 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouLangOperators>> 
     
     fn get_step_edge_color(
         &self,
-        _context_and_param: &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        _step : &RewriteStepKind<HibouLangOperators>,
+        _context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        _step : &RewriteStepKind<HibouRewritableLangOperator>,
     ) -> GraphvizColor {
         GraphvizColor::black
     }
     
     fn get_filter_node_inner_style_and_draw_if_needed(
         &self,
-        _context_and_param: &RewritingProcessContextAndParameterization<HibouLangOperators>,
+        _context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
         filtration_result: &RewritingFiltrationResult,
         _image_file_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
@@ -120,16 +120,16 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouLangOperators>> 
     
     fn get_filter_edge_color(
         &self,
-        _context_and_param: &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        _filtration_result: &<RewriteConfig<HibouLangOperators> as graph_process_manager_core::process::config::AbstractProcessConfiguration>::FiltrationResult,
+        _context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        _filtration_result: &<RewriteConfig<HibouRewritableLangOperator> as graph_process_manager_core::process::config::AbstractProcessConfiguration>::FiltrationResult,
     ) -> graphviz_dot_builder::colors::GraphvizColor {
         GraphvizColor::red
     }
     
     fn get_node_phase_id(
         &self,
-        _context_and_param: &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        new_node: &RewriteNodeKind<HibouLangOperators>
+        _context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        new_node: &RewriteNodeKind<HibouRewritableLangOperator>
     ) -> Option<usize> {
         Some(new_node.rewrite_system_index)
     }

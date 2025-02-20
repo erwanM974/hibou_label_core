@@ -26,7 +26,7 @@ use simple_term_rewriter::process::node::RewriteNodeKind;
 
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::interaction::Interaction;
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 use crate::seqdiag_lib_interface::draw_interaction_as_sequence_diagram_on_file;
 
 
@@ -35,12 +35,12 @@ pub struct HibouRewritingNodeAsSequenceDiagramDrawer {
     pub gen_ctx : GeneralContext
 }
 
-impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouLangOperators>> for HibouRewritingNodeAsSequenceDiagramDrawer {
+impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingNodeAsSequenceDiagramDrawer {
 
     fn get_node_node_inner_style_and_draw_if_needed(
         &self,
-        _context_and_param : &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        node : &RewriteNodeKind<HibouLangOperators>,
+        _context_and_param : &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        node : &RewriteNodeKind<HibouRewritableLangOperator>,
         full_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
         // ***

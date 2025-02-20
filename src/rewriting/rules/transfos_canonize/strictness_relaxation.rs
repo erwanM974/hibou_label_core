@@ -25,24 +25,24 @@ use simple_term_rewriter::core::term::LanguageTerm;
 
 use crate::core::semantics::frontier::global_frontier;
 use crate::core::syntax::interaction::{Interaction, LoopKind};
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 pub struct HibouStrictnessRelaxer {}
 
 
 // loopS(i1) -> loopW(i1) if some conditions are met
-impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouStrictnessRelaxer {
-    fn is_unary(&self, op : &HibouLangOperators) -> bool {
+impl GenericUnaryOperatorSimplifier<HibouRewritableLangOperator> for HibouStrictnessRelaxer {
+    fn is_unary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 1
     }
 
     fn try_simplify_under_unary_operator(
         &self,
-        top_operator : &HibouLangOperators,
-        term_underneath : &LanguageTerm<HibouLangOperators>
-    ) -> Option<LanguageTerm<HibouLangOperators>> {
-        if top_operator == &HibouLangOperators::Loop(LoopKind::SStrictSeq) {
+        top_operator : &HibouRewritableLangOperator,
+        term_underneath : &LanguageTerm<HibouRewritableLangOperator>
+    ) -> Option<LanguageTerm<HibouRewritableLangOperator>> {
+        if top_operator == &HibouRewritableLangOperator::Loop(LoopKind::SStrictSeq) {
             let i1 = Interaction::from_rewritable_term(
                 term_underneath
             );
@@ -71,7 +71,7 @@ impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouStrictnessRelax
                     // loopS(i1) -> loopW(i1) while preserving the semantics
                     return Some(
                         LanguageTerm::new(
-                            HibouLangOperators::Loop(LoopKind::Coreg(vec![])),
+                            HibouRewritableLangOperator::Loop(LoopKind::Coreg(vec![])),
                             vec![term_underneath.clone()]
                         )
                     );
@@ -87,18 +87,18 @@ impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouStrictnessRelax
 
 
 // strict(i1,i2) -> seq(i1,i2) if some conditions are met
-impl GenericBinaryOperatorSimplifier<HibouLangOperators> for HibouStrictnessRelaxer {
-    fn is_binary(&self, op : &HibouLangOperators) -> bool {
+impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouStrictnessRelaxer {
+    fn is_binary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 2
     }
 
     fn try_simplify_under_binary_operator(
         &self,
-        top_operator : &HibouLangOperators,
-        left : &LanguageTerm<HibouLangOperators>,
-        right : &LanguageTerm<HibouLangOperators>,
-    ) -> Option<LanguageTerm<HibouLangOperators>> {
-        if top_operator == &HibouLangOperators::Strict {
+        top_operator : &HibouRewritableLangOperator,
+        left : &LanguageTerm<HibouRewritableLangOperator>,
+        right : &LanguageTerm<HibouRewritableLangOperator>,
+    ) -> Option<LanguageTerm<HibouRewritableLangOperator>> {
+        if top_operator == &HibouRewritableLangOperator::Strict {
             // ***
             let last_locations_on_i1 : HashSet<usize> = {
                 let i1 = Interaction::from_rewritable_term(
@@ -132,7 +132,7 @@ impl GenericBinaryOperatorSimplifier<HibouLangOperators> for HibouStrictnessRela
                     // strict(i1,i2) -> seq(i1,i2) while preserving the semantics
                     return Some(
                         LanguageTerm::new(
-                            HibouLangOperators::CoReg(vec![]),
+                            HibouRewritableLangOperator::CoReg(vec![]),
                             vec![
                                 left.clone(),
                                 right.clone(),

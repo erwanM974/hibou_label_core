@@ -19,7 +19,7 @@ use crate::core::syntax::action::{EmissionAction, ReceptionAction};
 use crate::core::syntax::interaction::LoopKind;
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
-pub enum HibouLangOperators {
+pub enum HibouRewritableLangOperator {
     Emission(EmissionAction),
     Reception(ReceptionAction),
     Empty,
@@ -30,14 +30,14 @@ pub enum HibouLangOperators {
     And
 }
 
-impl HibouLangOperators {
+impl HibouRewritableLangOperator {
 
     pub fn left_and_right_distributes_over(&self, other_op : &Self) -> bool {
         match other_op {
-            HibouLangOperators::Alt => {
+            HibouRewritableLangOperator::Alt => {
                 match self {
-                    HibouLangOperators::Strict   => {true},
-                    HibouLangOperators::CoReg(_) => {true},
+                    HibouRewritableLangOperator::Strict   => {true},
+                    HibouRewritableLangOperator::CoReg(_) => {true},
                     _ => {false}
                 }
             },
@@ -51,22 +51,22 @@ impl HibouLangOperators {
 
     pub fn arity(&self) -> usize {
         match self {
-            HibouLangOperators::Emission(_) => {0}
-            HibouLangOperators::Reception(_) => {0}
-            HibouLangOperators::Empty => {0}
-            HibouLangOperators::Strict => {2}
-            HibouLangOperators::Alt => {2}
-            HibouLangOperators::CoReg(_) => {2}
-            HibouLangOperators::Loop(_) => {1}
-            HibouLangOperators::And => {2}
+            HibouRewritableLangOperator::Emission(_) => {0}
+            HibouRewritableLangOperator::Reception(_) => {0}
+            HibouRewritableLangOperator::Empty => {0}
+            HibouRewritableLangOperator::Strict => {2}
+            HibouRewritableLangOperator::Alt => {2}
+            HibouRewritableLangOperator::CoReg(_) => {2}
+            HibouRewritableLangOperator::Loop(_) => {1}
+            HibouRewritableLangOperator::And => {2}
         }
     }
 
     pub fn is_binary_associative(&self) -> bool {
         match self {
-            HibouLangOperators::Strict => {true},
-            HibouLangOperators::Alt => {true},
-            HibouLangOperators::CoReg(_) => {true},
+            HibouRewritableLangOperator::Strict => {true},
+            HibouRewritableLangOperator::Alt => {true},
+            HibouRewritableLangOperator::CoReg(_) => {true},
             _ => {false}
         }
     }

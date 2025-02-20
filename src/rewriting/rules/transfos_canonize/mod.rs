@@ -28,5 +28,6 @@ pub mod empty_interaction_simplifier;
 pub mod kleene_nesting;
 pub mod kleene_rolling;
 pub mod kleene_tightening;
+pub mod sequencing_compatibility;
 pub mod strictness_relaxation;  
 

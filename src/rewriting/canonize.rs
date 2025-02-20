@@ -19,17 +19,17 @@ use simple_term_rewriter::{core::conversion::{from_rewritable_term::FromRewritab
 
 use crate::core::syntax::interaction::Interaction;
 
-use super::{lang::HibouLangOperators, rules::high_level_hibou_rewrite_rules::HighLevelHibouRewriteRules};
+use super::{lang::HibouRewritableLangOperator, rules::high_level_hibou_rewrite_rules::HighLevelHibouRewriteRules};
 
 
 pub fn canonize_interaction(
     int : &Interaction,
-    loggers : Vec<Box< dyn AbstractProcessLogger<RewriteConfig<HibouLangOperators>>>>,
+    loggers : Vec<Box< dyn AbstractProcessLogger<RewriteConfig<HibouRewritableLangOperator>>>>,
     keep_only_one : bool
 ) -> Interaction {
     let int_as_term = int.to_rewritable_term();
 
-    let phase1 = RewritingProcessPhase::<HibouLangOperators>::new(
+    let phase1 = RewritingProcessPhase::<HibouRewritableLangOperator>::new(
         vec![
             HighLevelHibouRewriteRules::FlushRight.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt.get_low_level_rewrite_rule(),
@@ -44,6 +44,7 @@ pub fn canonize_interaction(
             HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
+            HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule(),
             // ***
             HighLevelHibouRewriteRules::DeFactorizeLeft.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::DeFactorizeRight.get_low_level_rewrite_rule(),
@@ -66,6 +67,7 @@ pub fn canonize_interaction(
             HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
+            HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule(),
             // ***
             HighLevelHibouRewriteRules::FactorizeRight.get_low_level_rewrite_rule(),
         ],
@@ -87,6 +89,7 @@ pub fn canonize_interaction(
             HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
+            HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule(),
             // ***
             HighLevelHibouRewriteRules::FactorizeLeft.get_low_level_rewrite_rule(),
         ],
@@ -97,7 +100,7 @@ pub fn canonize_interaction(
 
     // ***
 
-    let mut manager : GenericProcessManager<RewriteConfig<HibouLangOperators>> = GenericProcessManager::new(
+    let mut manager : GenericProcessManager<RewriteConfig<HibouRewritableLangOperator>> = GenericProcessManager::new(
         context_and_param,
         QueueSearchStrategy::DFS,
         GenericProcessPriorities::new(RewritePriorities::default(),false),

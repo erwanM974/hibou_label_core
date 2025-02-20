@@ -83,13 +83,14 @@ impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction
 
 
 
-    fn identify_pattern_at_interaction_root(&self) -> Option<HibouLeafPattern> {
+    fn identify_pattern_at_interaction_root<'a>(&'a self) -> Option<(HibouLeafPattern,Option<(HibouOperators,&'a Self)>)> {
         match self {
             Interaction::Empty => {
-                return Some(HibouLeafPattern::EMPTY);
+                return Some((HibouLeafPattern::EMPTY,None));
             },
             Interaction::Emission(em_act) => {
                 return Some(
+                (
                     HibouLeafPattern::BROADCAST(
                         HibouBroadcastLeafPattern::new(
                             HibouBroadcastOrigin::LF(em_act.orig_lf_id), 
@@ -97,7 +98,9 @@ impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction
                             vec![], 
                             em_act.target_gates.clone()
                         )
-                    )
+                    ),
+                    None
+                )
                 );
             },
             Interaction::Reception(rc_act) => {
@@ -110,6 +113,7 @@ impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction
                     },
                 };
                 return Some(
+                (
                     HibouLeafPattern::BROADCAST(
                         HibouBroadcastLeafPattern::new(
                             origin, 
@@ -117,81 +121,139 @@ impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction
                             vec![rc_act.targ_lf_id], 
                             vec![]
                         )
-                    )
+                    ),
+                    None
+                )
                 );
             },
             Interaction::Strict(i1, i2) => {
-                if let Interaction::Emission(ref em_act) = **i1 {
-                    // if on the left of the strict we have an emission "act1 = l1!m1"
-                    if let Some(HibouLeafPattern::BROADCAST(b2)) = i2.identify_pattern_at_interaction_root() {
-                        if b2.origin == HibouBroadcastOrigin::ENV && b2.msg_id == em_act.ms_id {
-                            // and on the right of the strict we have identified a pattern of the form "seq(l2?m1,...)" i.e.
-                            // a broadcast pattern with no known origin and the same message "m1"
-                            // then we return the broadcast, having found the origin as "l1" i.e. "act1.lf_id"
-
-                            let broadcast = HibouBroadcastLeafPattern::new(
-                                HibouBroadcastOrigin::LF(em_act.orig_lf_id),
-                                em_act.ms_id,
-                                b2.lf_targets,
-                                em_act.target_gates.clone()
-                            );
-                            return Some(HibouLeafPattern::BROADCAST(broadcast));
+                if let Some((HibouLeafPattern::BROADCAST(found_broadcast_on_the_left),rem1)) = i1.identify_pattern_at_interaction_root() {
+                    if rem1.is_none() && found_broadcast_on_the_left.origin.is_lifeline() {
+                        // if on the left of the strict we have a broadcast without remainders and with a known emitting lifeline
+                        // ***
+                        // we try to complete it on the right with another broadcast, but without known emitting lifeline
+                        if let Some((HibouLeafPattern::BROADCAST(found_broadcast_on_the_right),rem2)) = i2.identify_pattern_at_interaction_root() {
+                            if found_broadcast_on_the_right.origin == HibouBroadcastOrigin::ENV && found_broadcast_on_the_right.msg_id == found_broadcast_on_the_left.msg_id {
+                                // here we have found a matching broadcast on the immediate right
+                                // on the right of the strict we have identified a pattern of the form "seq(l?,...)" i.e.
+                                // a broadcast pattern with no known origin and the same message
+                                // then we return the broadcast
+                                let mut gt_targs = vec![];
+                                for t in found_broadcast_on_the_left.gt_targets {
+                                    gt_targs.push(t);
+                                }
+                                for t in found_broadcast_on_the_right.gt_targets {
+                                    if !gt_targs.contains(&t) {
+                                        gt_targs.push(t);
+                                    }
+                                }
+                                let mut lf_targets = found_broadcast_on_the_left.lf_targets;
+                                    lf_targets.extend(found_broadcast_on_the_right.lf_targets);
+                                let broadcast = HibouBroadcastLeafPattern::new(
+                                    found_broadcast_on_the_left.origin,
+                                    found_broadcast_on_the_left.msg_id,
+                                    lf_targets,
+                                    gt_targs
+                                );
+                                return Some((HibouLeafPattern::BROADCAST(broadcast),rem2));
+                            }
                         }
-                    } 
+                    }
                 }
                 return None;
             },
             Interaction::CoReg(cr,i1, i2) => {
-                if cr.is_empty() {
-                    if let (
-                        Some(HibouLeafPattern::BROADCAST(b1)),
-                        Some(HibouLeafPattern::BROADCAST(b2))
-                    ) = (i1.identify_pattern_at_interaction_root(),i2.identify_pattern_at_interaction_root()) {
-                        let mut gt_targs = vec![];
-                        for t in b1.gt_targets {
-                            gt_targs.push(t);
-                        }
-                        for t in b2.gt_targets {
-                            if !gt_targs.contains(&t) {
-                                gt_targs.push(t);
-                            }
-                        }
-                        let same_message = b1.msg_id == b2.msg_id;
-                        if same_message {
-                            // both patterns concern the same message
+                if !cr.is_empty() {
+                    return None;
+                }
+                if let Some((HibouLeafPattern::BROADCAST(b1),rem1)) = i1.identify_pattern_at_interaction_root() {
+                    // here there is a broadcast on the left side
+                    // ***
+                    if rem1.is_some() {
+                        // here there is a remainder on the right child of the left sub-interaction
+                        // so we do not propagate the broadcast any higher
+                        return None;
+                    }
+                    // we try to complete the broadcast with information from the right sub-interaction
+                    if let Some((HibouLeafPattern::BROADCAST(b2),rem2)) = i2.identify_pattern_at_interaction_root() {
+                        // here we have also found a broadcast pattern on the right sub-interaction
+                        // we might be able to merge both broadcast patterns into a single one
+                        let merge_patterns : bool = 
+                        if b1.msg_id == b2.msg_id {
+                            // here both patterns involve the same message
                             if b1.origin == HibouBroadcastOrigin::ENV && b2.origin == HibouBroadcastOrigin::ENV {
-                                // we merge two receptions casts to a single reception cast
-                                let mut lf_targets = b1.lf_targets;
-                                lf_targets.extend(b2.lf_targets);
-                                return Some(
-                                    HibouLeafPattern::BROADCAST(
-                                        HibouBroadcastLeafPattern::new(
-                                            HibouBroadcastOrigin::ENV, 
-                                            b1.msg_id, 
-                                            lf_targets,
-                                            gt_targs
-                                        )
-                                    )
-                                );
-                            }
-                            // ***
-                            if let HibouBroadcastOrigin::LF(orig_lf) = b1.origin {
-                                // we have a broadcast from a given lifeline on the left
-                                if b1.lf_targets.is_empty() && b2.lf_targets == vec![orig_lf] {
-                                    // we have an emission to self
-                                    return Some(
-                                        HibouLeafPattern::BROADCAST(
-                                            HibouBroadcastLeafPattern::new(
-                                                HibouBroadcastOrigin::LF(orig_lf), 
-                                                b1.msg_id, 
-                                                vec![orig_lf],
-                                                gt_targs
-                                            )
-                                        )
-                                    );
+                                // we can merge two receptions casts to a single reception cast
+                                true 
+                            } else {
+                                if let HibouBroadcastOrigin::LF(orig_lf) = b1.origin {
+                                    // here the left broadcast pattern has a known lifeline origin
+                                    if b1.lf_targets.is_empty() && b2.lf_targets == vec![orig_lf] {
+                                        // we have an emission to self
+                                        true 
+                                    } else {
+                                        false
+                                    }
+                                } else {
+                                    false 
                                 }
                             }
+                        } else {
+                            false 
+                        };
+                        // ***
+                        if merge_patterns {
+                            // if we can merge the patterns, we do so
+                            let mut gt_targs = vec![];
+                            for t in b1.gt_targets {
+                                gt_targs.push(t);
+                            }
+                            for t in b2.gt_targets {
+                                if !gt_targs.contains(&t) {
+                                    gt_targs.push(t);
+                                }
+                            }
+                            // ***
+                            let mut lf_targets = b1.lf_targets;
+                            lf_targets.extend(b2.lf_targets);
+                            // ***
+                            return Some(
+                            (
+                                HibouLeafPattern::BROADCAST(
+                                    HibouBroadcastLeafPattern::new(
+                                        b1.origin, 
+                                        b1.msg_id, 
+                                        lf_targets,
+                                        gt_targs
+                                    )
+                                ),
+                                rem2
+                            )
+                            );
+                        } else {
+                            // otherwise, we only return the left one, and the right sub-interaction as a remainder
+                            return Some(
+                                (
+                                    HibouLeafPattern::BROADCAST(b1),
+                                    Some((
+                                        HibouOperators::Coreg(vec![]),
+                                        i2
+                                    ))
+                                )
+                            );
                         }
+                    } else {
+                        // here we have not found any broadcast pattern on the right sub-interaction
+                        // so we only return the one we have found on the left, 
+                        // and the remainder is the right sub-interaction
+                        return Some(
+                            (
+                                HibouLeafPattern::BROADCAST(b1),
+                                Some((
+                                    HibouOperators::Coreg(vec![]),
+                                    i2
+                                ))
+                            )
+                        );
                     }
                 }
                 return None;

@@ -19,15 +19,15 @@ limitations under the License.
 
 use simple_term_rewriter::builtin_trs::rules::flush::AssociativityChecker;
 
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
 pub struct HibouAssociativityChecker {}
 
 
-impl AssociativityChecker<HibouLangOperators> for HibouAssociativityChecker {
-    fn is_binary_associative(&self, op : &HibouLangOperators) -> bool {
+impl AssociativityChecker<HibouRewritableLangOperator> for HibouAssociativityChecker {
+    fn is_binary_associative(&self, op : &HibouRewritableLangOperator) -> bool {
         op.is_binary_associative()
     }
 }

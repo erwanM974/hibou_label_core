@@ -27,7 +27,7 @@ use simple_term_rewriter::process::node::RewriteNodeKind;
 
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::interaction::LoopKind;
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
@@ -35,43 +35,43 @@ pub struct HibouRewritingNodeAsTermDrawer {
     pub gen_ctx : GeneralContext
 }
 
-impl TermDrawingContext<HibouLangOperators> for HibouRewritingNodeAsTermDrawer {
+impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTermDrawer {
     fn get_operator_representation_as_graphviz_node_style(
         &self, 
-        operator : &HibouLangOperators
+        operator : &HibouRewritableLangOperator
     ) -> GraphvizNodeStyle {
         let label = match operator {
-            HibouLangOperators::Emission(emission_action) => {
+            HibouRewritableLangOperator::Emission(emission_action) => {
                 format!(
                     "{}!{}", 
                     self.gen_ctx.get_lf_name(emission_action.orig_lf_id).unwrap(), 
                     self.gen_ctx.get_ms_name(emission_action.ms_id).unwrap(), 
                 )
             },
-            HibouLangOperators::Reception(reception_action) => {
+            HibouRewritableLangOperator::Reception(reception_action) => {
                 format!(
                     "{}?{}", 
                     self.gen_ctx.get_lf_name(reception_action.targ_lf_id).unwrap(), 
                     self.gen_ctx.get_ms_name(reception_action.ms_id).unwrap(), 
                 )
             },
-            HibouLangOperators::Empty => {
+            HibouRewritableLangOperator::Empty => {
                 "∅".to_owned()
             },
-            HibouLangOperators::Strict => {
+            HibouRewritableLangOperator::Strict => {
                 "strict".to_owned()
             },
-            HibouLangOperators::Alt => {
+            HibouRewritableLangOperator::Alt => {
                 "alt".to_owned()
             },
-            HibouLangOperators::CoReg(cr) => {
+            HibouRewritableLangOperator::CoReg(cr) => {
                 let cr_lfs : Vec<String> = cr.iter().map(|lf_id| self.gen_ctx.get_lf_name(*lf_id).unwrap().clone()).collect();
                 format!(
                     "coreg({})",
                     cr_lfs.join(",")
                 )
             },
-            HibouLangOperators::Loop(lk) => {
+            HibouRewritableLangOperator::Loop(lk) => {
                 match lk {
                     LoopKind::HHeadFirstWS => {
                         "loopH".to_owned()
@@ -88,7 +88,7 @@ impl TermDrawingContext<HibouLangOperators> for HibouRewritingNodeAsTermDrawer {
                     },
                 }
             },
-            HibouLangOperators::And => {
+            HibouRewritableLangOperator::And => {
                 "and".to_owned()
             },
         };
@@ -99,19 +99,19 @@ impl TermDrawingContext<HibouLangOperators> for HibouRewritingNodeAsTermDrawer {
     }
 }
 
-impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouLangOperators>> for HibouRewritingNodeAsTermDrawer {
+impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingNodeAsTermDrawer {
 
     fn get_node_node_inner_style_and_draw_if_needed(
         &self,
-        _context_and_param : &RewritingProcessContextAndParameterization<HibouLangOperators>,
-        node : &RewriteNodeKind<HibouLangOperators>,
+        _context_and_param : &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
+        node : &RewriteNodeKind<HibouRewritableLangOperator>,
         full_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
         // ***
         let temp_file_name = "temp.dot";
         let temp_path : PathBuf = [&temp_file_name].iter().collect();
         // ***
-        draw_term_tree_with_graphviz::<HibouLangOperators,HibouRewritingNodeAsTermDrawer>(
+        draw_term_tree_with_graphviz::<HibouRewritableLangOperator,HibouRewritingNodeAsTermDrawer>(
             self,
             &node.term,
             &temp_path.as_path(),

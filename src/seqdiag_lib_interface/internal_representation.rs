@@ -38,6 +38,15 @@ pub enum HibouBroadcastOrigin {
     GT(usize)
 }
 
+impl HibouBroadcastOrigin {
+    pub fn is_lifeline(&self) -> bool {
+        match self {
+            HibouBroadcastOrigin::LF(_) => {true},
+            _ => {false}
+        }
+    }
+}
+
 
 #[derive(Debug,Clone)]
 pub struct HibouBroadcastLeafPattern {

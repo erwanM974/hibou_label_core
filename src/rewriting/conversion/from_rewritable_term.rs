@@ -18,46 +18,46 @@ limitations under the License.
 use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 
 use crate::core::syntax::interaction::Interaction;
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
-impl FromRewritableTermToDomainSpecificTerm<HibouLangOperators> for Interaction {
+impl FromRewritableTermToDomainSpecificTerm<HibouRewritableLangOperator> for Interaction {
 
      fn instantiate_term_under_operator(
-        operator : &HibouLangOperators, 
+        operator : &HibouRewritableLangOperator, 
         sub_terms : &mut Vec<Self>
     ) -> Self {
         match operator {
-            HibouLangOperators::Emission(emission_action) => {
+            HibouRewritableLangOperator::Emission(emission_action) => {
                 Interaction::Emission(emission_action.clone())
             },
-            HibouLangOperators::Reception(reception_action) => {
+            HibouRewritableLangOperator::Reception(reception_action) => {
                 Interaction::Reception(reception_action.clone())
             },
-            HibouLangOperators::Empty => {
+            HibouRewritableLangOperator::Empty => {
                 Interaction::Empty
             },
-            HibouLangOperators::Strict => {
+            HibouRewritableLangOperator::Strict => {
                 let i2 = sub_terms.pop().unwrap();
                 let i1 = sub_terms.pop().unwrap();
                 Interaction::Strict(Box::new(i1),Box::new(i2))
             },
-            HibouLangOperators::Alt => {
+            HibouRewritableLangOperator::Alt => {
                 let i2 = sub_terms.pop().unwrap();
                 let i1 = sub_terms.pop().unwrap();
                 Interaction::Alt(Box::new(i1),Box::new(i2))
             },
-            HibouLangOperators::CoReg(cr) => {
+            HibouRewritableLangOperator::CoReg(cr) => {
                 let i2 = sub_terms.pop().unwrap();
                 let i1 = sub_terms.pop().unwrap();
                 Interaction::CoReg(cr.clone(),Box::new(i1),Box::new(i2))
             },
-            HibouLangOperators::Loop(loop_kind) => {
+            HibouRewritableLangOperator::Loop(loop_kind) => {
                 let i1 = sub_terms.pop().unwrap();
                 Interaction::Loop(loop_kind.clone(),Box::new(i1))
             },
-            HibouLangOperators::And => {
+            HibouRewritableLangOperator::And => {
                 let i2 = sub_terms.pop().unwrap();
                 let i1 = sub_terms.pop().unwrap();
                 Interaction::And(Box::new(i1),Box::new(i2))

@@ -18,7 +18,7 @@ limitations under the License.
 
 use simple_term_rewriter::{builtin_trs::rules::simpl_unary::GenericUnaryOperatorSimplifier, core::term::LanguageTerm};
 
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
@@ -31,22 +31,22 @@ pub struct HibouKleeneNestingSimplifier {}
 
 
 
-impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouKleeneNestingSimplifier {
-    fn is_unary(&self, op : &HibouLangOperators) -> bool {
+impl GenericUnaryOperatorSimplifier<HibouRewritableLangOperator> for HibouKleeneNestingSimplifier {
+    fn is_unary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 1
     }
 
     fn try_simplify_under_unary_operator(
         &self,
-        top_operator : &HibouLangOperators,
-        term_underneath : &LanguageTerm<HibouLangOperators>
-    ) -> Option<LanguageTerm<HibouLangOperators>> {
+        top_operator : &HibouRewritableLangOperator,
+        term_underneath : &LanguageTerm<HibouRewritableLangOperator>
+    ) -> Option<LanguageTerm<HibouRewritableLangOperator>> {
         match (top_operator,&term_underneath.operator) {
-            (HibouLangOperators::Loop(lk2),HibouLangOperators::Loop(lk1)) => {
+            (HibouRewritableLangOperator::Loop(lk2),HibouRewritableLangOperator::Loop(lk1)) => {
                 if let Some(lk) = lk2.get_most_permissive(lk1) {
                     Some(
                         LanguageTerm::new(
-                            HibouLangOperators::Loop(lk),
+                            HibouRewritableLangOperator::Loop(lk),
                             term_underneath.sub_terms.clone()
                         )
                     )

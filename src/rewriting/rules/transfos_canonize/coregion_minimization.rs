@@ -24,7 +24,7 @@ use simple_term_rewriter::core::term::LanguageTerm;
 use crate::core::syntax::interaction::LoopKind;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
 use crate::core::syntax::interaction::Interaction;
-use crate::rewriting::lang::HibouLangOperators;
+use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
@@ -34,17 +34,17 @@ pub struct HibouCoregionMinimizer {}
 
 
 // loopCr(cr,i1) -> loopCr( cr ∩  Θ(i1), i1)
-impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouCoregionMinimizer {
-    fn is_unary(&self, op : &HibouLangOperators) -> bool {
+impl GenericUnaryOperatorSimplifier<HibouRewritableLangOperator> for HibouCoregionMinimizer {
+    fn is_unary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 1
     }
 
     fn try_simplify_under_unary_operator(
         &self,
-        top_operator : &HibouLangOperators,
-        term_underneath : &LanguageTerm<HibouLangOperators>
-    ) -> Option<LanguageTerm<HibouLangOperators>> {
-        if let HibouLangOperators::Loop(LoopKind::Coreg(cr)) = top_operator {
+        top_operator : &HibouRewritableLangOperator,
+        term_underneath : &LanguageTerm<HibouRewritableLangOperator>
+    ) -> Option<LanguageTerm<HibouRewritableLangOperator>> {
+        if let HibouRewritableLangOperator::Loop(LoopKind::Coreg(cr)) = top_operator {
             // ***
             let involved_in_i1 = {
                 let i1 = Interaction::from_rewritable_term(
@@ -63,7 +63,7 @@ impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouCoregionMinimiz
             if new_cr.len() < cr.len() {
                 return Some(
                     LanguageTerm::new(
-                        HibouLangOperators::Loop(LoopKind::Coreg(new_cr)), 
+                        HibouRewritableLangOperator::Loop(LoopKind::Coreg(new_cr)), 
                         vec![term_underneath.clone()]
                     )
                 );
@@ -78,18 +78,18 @@ impl GenericUnaryOperatorSimplifier<HibouLangOperators> for HibouCoregionMinimiz
 
 
 // coreg(cr,i1,i2) -> coreg(cr ∩  Θ(i1) ∩  Θ(i2), i1,i2)
-impl GenericBinaryOperatorSimplifier<HibouLangOperators> for HibouCoregionMinimizer {
-    fn is_binary(&self, op : &HibouLangOperators) -> bool {
+impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouCoregionMinimizer {
+    fn is_binary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 2
     }
 
     fn try_simplify_under_binary_operator(
         &self,
-        top_operator : &HibouLangOperators,
-        left : &LanguageTerm<HibouLangOperators>,
-        right : &LanguageTerm<HibouLangOperators>,
-    ) -> Option<LanguageTerm<HibouLangOperators>> {
-        if let HibouLangOperators::CoReg(cr) = top_operator {
+        top_operator : &HibouRewritableLangOperator,
+        left : &LanguageTerm<HibouRewritableLangOperator>,
+        right : &LanguageTerm<HibouRewritableLangOperator>,
+    ) -> Option<LanguageTerm<HibouRewritableLangOperator>> {
+        if let HibouRewritableLangOperator::CoReg(cr) = top_operator {
             // ***
             let involved_in_i1 = {
                 let i1 = Interaction::from_rewritable_term(
@@ -115,7 +115,7 @@ impl GenericBinaryOperatorSimplifier<HibouLangOperators> for HibouCoregionMinimi
             if new_cr.len() < cr.len() {
                 return Some(
                     LanguageTerm::new(
-                        HibouLangOperators::CoReg(new_cr), 
+                        HibouRewritableLangOperator::CoReg(new_cr), 
                         vec![
                             left.clone(),
                             right.clone()

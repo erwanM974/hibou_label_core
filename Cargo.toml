@@ -1,6 +1,6 @@
 [package]
 name = "hibou_label_core"
-version = "0.9.0"
+version = "0.9.1"
 authors = ["Erwan Mahe"]
 edition = "2021"
 
@@ -24,7 +24,7 @@ graphviz_dot_builder          = "0.1.5"        # for generating dot files to be 
 graph_process_manager_core    = "0.2.1"      #
 graph_process_manager_loggers = "0.2.3"      #
 autour_core                   = "0.1.12"
-common_sequence_diagram_io    = {version="0.1.5",features=["from_text", "to_text", "to_image"]}
+common_sequence_diagram_io    = { version = "0.1.6", features=["from_text", "to_text", "to_image"]}
 simple_term_rewriter          = "0.2.3"
 
 
