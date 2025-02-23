@@ -20,6 +20,7 @@ use graph_process_manager_loggers::graphviz::drawers::node_drawer::CustomNodeDra
 use graph_process_manager_loggers::graphviz::item::BuiltinGraphvizLoggerItemStyle;
 
 use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::draw_term::draw_term_tree_with_graphviz;
 use simple_term_rewriter::process::conf::RewriteConfig;
 use simple_term_rewriter::process::context::RewritingProcessContextAndParameterization;
 use simple_term_rewriter::process::node::RewriteNodeKind;
@@ -27,15 +28,16 @@ use simple_term_rewriter::process::node::RewriteNodeKind;
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::interaction::Interaction;
 use crate::rewriting::lang::HibouRewritableLangOperator;
-use crate::seqdiag_lib_interface::draw_interaction_as_sequence_diagram_on_file;
+use crate::seqdiag_lib_interface::io::{draw_interaction_on_file, InteractionDrawingKind};
 
 
 
-pub struct HibouRewritingNodeAsSequenceDiagramDrawer {
-    pub gen_ctx : GeneralContext
+pub struct HibouRewritingNodeDrawer {
+    pub gen_ctx : GeneralContext,
+    pub draw_kind : InteractionDrawingKind
 }
 
-impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingNodeAsSequenceDiagramDrawer {
+impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingNodeDrawer {
 
     fn get_node_node_inner_style_and_draw_if_needed(
         &self,
@@ -43,12 +45,29 @@ impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator
         node : &RewriteNodeKind<HibouRewritableLangOperator>,
         full_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
-        // ***
-        let int = Interaction::from_rewritable_term(&node.term);
-        // ***
-        draw_interaction_as_sequence_diagram_on_file(
-            full_path,&self.gen_ctx,&int
-        );
+        match self.draw_kind {
+            InteractionDrawingKind::AsSequenceDiagram => {
+                // ***
+                let int = Interaction::from_rewritable_term(&node.term);
+                // ***
+                draw_interaction_on_file(
+                    full_path,
+                    &self.gen_ctx,
+                    &int,
+                    &self.draw_kind
+                );
+            },
+            InteractionDrawingKind::AsTermTree => {
+                let temp_file_path = format!("{}_temp.dot",full_path.to_str().unwrap());
+                // ***
+                draw_term_tree_with_graphviz::<HibouRewritableLangOperator,GeneralContext>(
+                    &self.gen_ctx,
+                    &node.term,
+                    &Path::new(&temp_file_path),
+                    full_path
+                );
+            }
+        }
         BuiltinGraphvizLoggerItemStyle::CustomImage
     }
 

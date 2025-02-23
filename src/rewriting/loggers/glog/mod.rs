@@ -16,5 +16,4 @@ limitations under the License.
 
 pub mod all_the_rest_drawer;
 pub mod legend_writer;
-pub mod node_drawer_as_seqdiag;
-pub mod node_drawer_as_term;
+pub mod node_drawer;

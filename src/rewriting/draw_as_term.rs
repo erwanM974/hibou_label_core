@@ -15,27 +15,40 @@ limitations under the License.
 */
 
 
-use std::path::{Path, PathBuf};
-use graph_process_manager_loggers::graphviz::drawers::node_drawer::CustomNodeDrawerForGraphvizLogger;
-use graph_process_manager_loggers::graphviz::item::BuiltinGraphvizLoggerItemStyle;
+use std::path::Path;
+
 use graphviz_dot_builder::item::node::style::{GraphvizNodeStyle, GraphvizNodeStyleItem, GvNodeShape};
+use simple_term_rewriter::core::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm;
+use simple_term_rewriter::draw_term::TermDrawingContext;
+use simple_term_rewriter::draw_term::draw_term_tree_with_graphviz;
 
-use simple_term_rewriter::draw_term::{draw_term_tree_with_graphviz, TermDrawingContext};
-use simple_term_rewriter::process::conf::RewriteConfig;
-use simple_term_rewriter::process::context::RewritingProcessContextAndParameterization;
-use simple_term_rewriter::process::node::RewriteNodeKind;
+use crate::core::{general_context::GeneralContext, syntax::interaction::{Interaction, LoopKind}};
 
-use crate::core::general_context::GeneralContext;
-use crate::core::syntax::interaction::LoopKind;
-use crate::rewriting::lang::HibouRewritableLangOperator;
+use super::lang::HibouRewritableLangOperator;
 
 
 
-pub struct HibouRewritingNodeAsTermDrawer {
-    pub gen_ctx : GeneralContext
+
+
+
+pub(crate) fn draw_interaction_as_term_tree_on_file(
+    file_path : &Path,
+    ctx : &GeneralContext,
+    int : &Interaction
+) {
+    let temp_file_path = format!("{}_temp.dot",file_path.to_str().unwrap());
+    // ***
+    draw_term_tree_with_graphviz::<HibouRewritableLangOperator,GeneralContext>(
+        ctx,
+        &int.to_rewritable_term(),
+        &Path::new(&temp_file_path),
+        file_path
+    );
 }
 
-impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTermDrawer {
+
+
+impl TermDrawingContext<HibouRewritableLangOperator> for GeneralContext {
     fn get_operator_representation_as_graphviz_node_style(
         &self, 
         operator : &HibouRewritableLangOperator
@@ -44,15 +57,15 @@ impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTer
             HibouRewritableLangOperator::Emission(emission_action) => {
                 format!(
                     "{}!{}", 
-                    self.gen_ctx.get_lf_name(emission_action.orig_lf_id).unwrap(), 
-                    self.gen_ctx.get_ms_name(emission_action.ms_id).unwrap(), 
+                    self.get_lf_name(emission_action.orig_lf_id).unwrap(), 
+                    self.get_ms_name(emission_action.ms_id).unwrap(), 
                 )
             },
             HibouRewritableLangOperator::Reception(reception_action) => {
                 format!(
                     "{}?{}", 
-                    self.gen_ctx.get_lf_name(reception_action.targ_lf_id).unwrap(), 
-                    self.gen_ctx.get_ms_name(reception_action.ms_id).unwrap(), 
+                    self.get_lf_name(reception_action.targ_lf_id).unwrap(), 
+                    self.get_ms_name(reception_action.ms_id).unwrap(), 
                 )
             },
             HibouRewritableLangOperator::Empty => {
@@ -65,7 +78,7 @@ impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTer
                 "alt".to_owned()
             },
             HibouRewritableLangOperator::CoReg(cr) => {
-                let cr_lfs : Vec<String> = cr.iter().map(|lf_id| self.gen_ctx.get_lf_name(*lf_id).unwrap().clone()).collect();
+                let cr_lfs : Vec<String> = cr.iter().map(|lf_id| self.get_lf_name(*lf_id).unwrap().clone()).collect();
                 format!(
                     "coreg({})",
                     cr_lfs.join(",")
@@ -80,7 +93,7 @@ impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTer
                         "loopS".to_owned()
                     },
                     LoopKind::Coreg(cr) => {
-                        let cr_lfs : Vec<String> = cr.iter().map(|lf_id| self.gen_ctx.get_lf_name(*lf_id).unwrap().clone()).collect();
+                        let cr_lfs : Vec<String> = cr.iter().map(|lf_id| self.get_lf_name(*lf_id).unwrap().clone()).collect();
                         format!(
                             "loopC({})",
                             cr_lfs.join(",")
@@ -99,28 +112,7 @@ impl TermDrawingContext<HibouRewritableLangOperator> for HibouRewritingNodeAsTer
     }
 }
 
-impl CustomNodeDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOperator>> for HibouRewritingNodeAsTermDrawer {
 
-    fn get_node_node_inner_style_and_draw_if_needed(
-        &self,
-        _context_and_param : &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
-        node : &RewriteNodeKind<HibouRewritableLangOperator>,
-        full_path : &Path
-    ) -> BuiltinGraphvizLoggerItemStyle {
-        // ***
-        let temp_file_name = "temp.dot";
-        let temp_path : PathBuf = [&temp_file_name].iter().collect();
-        // ***
-        draw_term_tree_with_graphviz::<HibouRewritableLangOperator,HibouRewritingNodeAsTermDrawer>(
-            self,
-            &node.term,
-            &temp_path.as_path(),
-            full_path
-        );
-        BuiltinGraphvizLoggerItemStyle::CustomImage
-    }
-
-}
 
 
 

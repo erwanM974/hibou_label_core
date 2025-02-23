@@ -14,17 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-use std::fs;
-use std::path::Path;
-use common_sequence_diagram_io::conversion::lang_to_repr::FromInteractionTermToInternalRepresentation;
-use common_sequence_diagram_io::conversion::repr_to_lang::FromInternalRepresentationToInteractionTerm;
-use common_sequence_diagram_io::from_text::parse::parse_interaction;
-use common_sequence_diagram_io::to_image::interface::draw_interaction_as_sequence_diagram;
-use common_sequence_diagram_io::to_text::print::print_interaction;
-use internal_representation::HibouLangCioII;
-use crate::core::general_context::GeneralContext;
-use crate::seqdiag_lib_interface::to_image::drawing_context::HibouDrawingContext;
-use crate::core::syntax::interaction::Interaction;
+
 
 pub(in crate::seqdiag_lib_interface) mod internal_representation;
 pub(in crate::seqdiag_lib_interface) mod from_text;
@@ -32,61 +22,4 @@ pub(in crate::seqdiag_lib_interface) mod conversion;
 pub(in crate::seqdiag_lib_interface) mod to_text;
 pub(in crate::seqdiag_lib_interface) mod to_image;
 
-
-pub fn read_interaction_from_text_on_file(
-        file_path : &Path,
-        ctx : &GeneralContext
-) -> Result<Interaction,String> {
-    match fs::read_to_string(file_path) {
-        Ok(data) => {
-            match parse_interaction::
-            <HibouLangCioII,GeneralContext>(
-                &data,&ctx
-            ) {
-                Ok(internal_repr) => {
-                    let interaction = Interaction::from_io_repr(&internal_repr);
-                    Ok(interaction)
-                },
-                Err(e2) => {
-                    Err(e2.to_string())
-                }
-            }
-
-        }
-        Err(e) => {
-            Err(e.to_string())
-        }
-    }
-
-}
-
-pub fn write_interaction_as_text_on_file(
-    file_path : &Path,
-    ctx : &GeneralContext,
-    int : &Interaction
-) {
-
-    let as_txt = print_interaction::<HibouLangCioII,GeneralContext>(
-        &int.to_io_repr(),
-        ctx
-    );
-    let _ = fs::write(file_path, as_txt);
-}
-
-
-pub fn draw_interaction_as_sequence_diagram_on_file(
-    file_path : &Path,
-    ctx : &GeneralContext,
-    int : &Interaction
-) {
-    let draw_ctx = HibouDrawingContext::new(ctx.clone());
-
-    draw_interaction_as_sequence_diagram::<HibouLangCioII,usize,HibouDrawingContext,HibouDrawingContext>(
-        &int.to_io_repr(),
-        &draw_ctx,
-        &draw_ctx,
-        file_path
-    );
-}
-
-
+pub mod io;

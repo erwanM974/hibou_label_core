@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 
+use simple_term_rewriter::core::term::RewritableLanguageOperatorSymbol;
+
 use crate::core::syntax::action::{EmissionAction, ReceptionAction};
 use crate::core::syntax::interaction::LoopKind;
 
@@ -29,6 +31,8 @@ pub enum HibouRewritableLangOperator {
     Loop(LoopKind),
     And
 }
+
+impl RewritableLanguageOperatorSymbol for HibouRewritableLangOperator {}
 
 impl HibouRewritableLangOperator {
 
