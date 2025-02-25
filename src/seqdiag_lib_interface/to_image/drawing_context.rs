@@ -108,11 +108,8 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
         match pattern{
             HibouLeafPattern::BROADCAST(ref brd) => {
                 let mut lfs = HashSet::new();
-                match &brd.origin {
-                    HibouBroadcastOrigin::LF(orig_lf) => {
-                        lfs.insert(*orig_lf);
-                    },
-                    _ => {}
+                if let HibouBroadcastOrigin::LF(orig_lf) = &brd.origin {
+                    lfs.insert(*orig_lf);
                 }
                 for lf in &brd.lf_targets {
                     lfs.insert(*lf);
@@ -128,10 +125,10 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
     fn get_lifeline_header(&self, l : &usize) -> ColoredTextParagraph {
         let lf_name = self.general_context.get_lf_name(*l).unwrap();
         ColoredTextParagraph::new(
-            vec![ColoredTextLine::new(vec![(lf_name.to_owned(),Rgb(HC_Lifeline))])],
+            vec![ColoredTextLine::new(vec![(lf_name.to_owned(),Rgb(HC_LIFELINE))])],
             MultiLineTextAlignment::Center, 
-            Some(Rgb(HCP_White)), 
-            Some(Rgb(HCP_Black))
+            Some(Rgb(HCP_WHITE)), 
+            Some(Rgb(HCP_BLACK))
         )
     }
 
@@ -141,7 +138,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                 // retrieve the message label
                 let ms_name = self.general_context.get_ms_name(brd.msg_id).unwrap();
                 let message = ColoredTextParagraph::new(
-                    vec![ColoredTextLine::new(vec![(ms_name.to_owned(),Rgb(HC_Message))])],
+                    vec![ColoredTextLine::new(vec![(ms_name.to_owned(),Rgb(HC_MESSAGE))])],
                     MultiLineTextAlignment::Center, 
                     None, 
                     None
@@ -149,7 +146,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                 let line_style = MessageExchangeLineStyle::new(
                     false, 
                     false, 
-                    Rgb(HCP_Black), 
+                    Rgb(HCP_BLACK), 
                     self.arrowhead_length
                 );
                 let origin = match &brd.origin {
@@ -162,10 +159,10 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                     HibouBroadcastOrigin::GT(gt_id) => {
                         let gt_name = self.general_context.get_gt_name(*gt_id).unwrap();
                         let gate = ColoredTextParagraph::new(
-                            vec![ColoredTextLine::new(vec![(gt_name.to_owned(),Rgb(HC_Gate))])],
+                            vec![ColoredTextLine::new(vec![(gt_name.to_owned(),Rgb(HC_GATE))])],
                             MultiLineTextAlignment::Center, 
                             None, 
-                            Some(Rgb(HCP_Black))
+                            Some(Rgb(HCP_BLACK))
                         );
                         DrawableBroadcastLeafPatternOrigin::InputOutsideGate(gate)
                     }
@@ -186,10 +183,10 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                             )
                         } else {
                             ColoredTextParagraph::new(
-                                vec![ColoredTextLine::new(vec![(format!("{}",occs),Rgb(HCP_Black))])], 
+                                vec![ColoredTextLine::new(vec![(format!("{}",occs),Rgb(HCP_BLACK))])], 
                                 MultiLineTextAlignment::Center,
-                                Some(Rgb(HCP_BrightGray)),
-                                Some(Rgb(HCP_Black))
+                                Some(Rgb(HCP_BRIGHT_GRAY)),
+                                Some(Rgb(HCP_BLACK))
                             )
                         };
                         lifeline_targets.insert(
@@ -202,10 +199,10 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                 for gt_id in &brd.gt_targets {
                     let gt_name = self.general_context.get_gt_name(*gt_id).unwrap();
                     let gate = ColoredTextParagraph::new(
-                        vec![ColoredTextLine::new(vec![(gt_name.to_owned(),Rgb(HC_Gate))])],
+                        vec![ColoredTextLine::new(vec![(gt_name.to_owned(),Rgb(HC_GATE))])],
                         MultiLineTextAlignment::Center, 
                         None, 
-                        Some(Rgb(HCP_Black))
+                        Some(Rgb(HCP_BLACK))
                     );
                     output_outside_gates_targets.push(gate);
                 }
@@ -233,7 +230,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
 
         if let HibouOperators::Coreg(cr) = op {
             if cr.is_empty() {
-                return DrawableOperator::new(Rgb(HCP_Black),DrawableOperatorKind::CoRegionLike(hashset!{}));
+                return DrawableOperator::new(Rgb(HCP_BLACK),DrawableOperatorKind::CoRegionLike(hashset!{}));
             }
             // ***
             let involved = {
@@ -246,29 +243,29 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
             // ***
             if involved.iter().all(|lf_id| cr.contains(lf_id)) {
                 let op_label = ColoredTextParagraph::new(
-                    vec![ColoredTextLine::new(vec![("par".to_owned(),Rgb(HCP_Black))])], 
+                    vec![ColoredTextLine::new(vec![("par".to_owned(),Rgb(HCP_BLACK))])], 
                     MultiLineTextAlignment::Center,
                     None,
                     None
                 );
-                return DrawableOperator::new(Rgb(HCP_Black),DrawableOperatorKind::Framed(op_label));
+                return DrawableOperator::new(Rgb(HCP_BLACK),DrawableOperatorKind::Framed(op_label));
             }
             // ***
-            return DrawableOperator::new(Rgb(HCP_Black),DrawableOperatorKind::CoRegionLike(cr.iter().cloned().collect()));
+            return DrawableOperator::new(Rgb(HCP_BLACK),DrawableOperatorKind::CoRegionLike(cr.iter().cloned().collect()));
         } 
 
         let colored_text_line = match op {
             HibouOperators::Strict => {
-                ColoredTextLine::new(vec![("strict".to_owned(),Rgb(HCP_Black))])
+                ColoredTextLine::new(vec![("strict".to_owned(),Rgb(HCP_BLACK))])
             },
             HibouOperators::Alt => {
-                ColoredTextLine::new(vec![("alt".to_owned(),Rgb(HCP_Black))])
+                ColoredTextLine::new(vec![("alt".to_owned(),Rgb(HCP_BLACK))])
             },
             HibouOperators::Loop(loop_kind) => {
                 match loop_kind {
                     LoopKind::Coreg(cr) => {
                         if cr.is_empty() {
-                            ColoredTextLine::new(vec![("loopW".to_owned(),Rgb(HCP_Black))])
+                            ColoredTextLine::new(vec![("loopW".to_owned(),Rgb(HCP_BLACK))])
                         } else {
                             let unique_sub_int = sub_ints.first().unwrap();
                             let as_interaction : Interaction = FromInternalRepresentationToInteractionTerm::<HibouLangCioII>::from_io_repr(
@@ -276,31 +273,31 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                             );
                             let involved = as_interaction.involved_lifelines();
                             if involved.iter().all(|lf_id| cr.contains(lf_id)) {
-                                ColoredTextLine::new(vec![("loopP".to_owned(),Rgb(HCP_Black))])
+                                ColoredTextLine::new(vec![("loopP".to_owned(),Rgb(HCP_BLACK))])
                             } else {
-                                let mut colored_segments = vec![("loopC(".to_owned(),Rgb(HCP_Black))];
+                                let mut colored_segments = vec![("loopC(".to_owned(),Rgb(HCP_BLACK))];
                                 let num_lfs_in_cr = cr.len();
                                 for (x,lf_id) in cr.iter().enumerate() {
-                                    colored_segments.push((self.general_context.get_lf_name(*lf_id).unwrap().to_owned(),Rgb(HC_Lifeline)));
+                                    colored_segments.push((self.general_context.get_lf_name(*lf_id).unwrap().to_owned(),Rgb(HC_LIFELINE)));
                                     if x < num_lfs_in_cr - 1 {
-                                        colored_segments.push((",".to_owned(),Rgb(HCP_Black)));
+                                        colored_segments.push((",".to_owned(),Rgb(HCP_BLACK)));
                                     }
                                 }
-                                colored_segments.push((")".to_owned(),Rgb(HCP_Black)));
+                                colored_segments.push((")".to_owned(),Rgb(HCP_BLACK)));
                                 ColoredTextLine::new(colored_segments)
                             }
                         }
                     },
                     LoopKind::HHeadFirstWS => {
-                        ColoredTextLine::new(vec![("loopH".to_owned(),Rgb(HCP_Black))])
+                        ColoredTextLine::new(vec![("loopH".to_owned(),Rgb(HCP_BLACK))])
                     },
                     LoopKind::SStrictSeq => {
-                        ColoredTextLine::new(vec![("loopS".to_owned(),Rgb(HCP_Black))])
+                        ColoredTextLine::new(vec![("loopS".to_owned(),Rgb(HCP_BLACK))])
                     },
                 }
             },
             HibouOperators::And => {
-                ColoredTextLine::new(vec![("and".to_owned(),Rgb(HCP_Black))])
+                ColoredTextLine::new(vec![("and".to_owned(),Rgb(HCP_BLACK))])
             },
             HibouOperators::Coreg(_) => {
                 panic!("should never be reached")
@@ -312,7 +309,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
             None,
             None
         );
-        DrawableOperator::new(Rgb(HCP_Black),DrawableOperatorKind::Framed(op_label))
+        DrawableOperator::new(Rgb(HCP_BLACK),DrawableOperatorKind::Framed(op_label))
     }
 
 }
@@ -322,13 +319,13 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
 
 impl ContextAwareInteractionDrawer<usize> for HibouDrawingContext {
     fn draw_background(&self, image : &mut image::RgbImage, img_width : f32, img_height : f32) {
-        draw_uniform_colored_background(image,&img_width,&img_height,Rgb(HCP_White));
+        draw_uniform_colored_background(image,&img_width,&img_height,Rgb(HCP_WHITE));
     }
     
     fn get_lifelines_colors(&self, involved_lifelines : &[usize]) -> HashMap<usize,Rgb<u8>> {
         let mut lifelines_colors = HashMap::new();
         for lf in involved_lifelines {
-            lifelines_colors.insert(*lf,Rgb(HCP_Black));
+            lifelines_colors.insert(*lf,Rgb(HCP_BLACK));
         }
         lifelines_colors
     }

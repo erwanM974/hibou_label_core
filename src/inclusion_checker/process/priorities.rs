@@ -14,6 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-pub mod all_the_rest_drawer;
-pub mod legend_writer;
-pub mod node_drawer;
+
+use graph_process_manager_core::queue::priorities::AbstractPriorities;
+
+use super::step::InteractionInclusionCheckingStepKind;
+
+
+
+pub struct InteractionInclusionCheckingPriorities {}
+
+
+
+impl AbstractPriorities<InteractionInclusionCheckingStepKind> for InteractionInclusionCheckingPriorities {
+    fn get_priority_of_step(
+        &self,
+        _step: &InteractionInclusionCheckingStepKind
+    ) -> i32 {
+        0
+    }
+
+}
+

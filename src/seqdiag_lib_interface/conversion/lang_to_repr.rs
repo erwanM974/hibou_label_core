@@ -29,7 +29,7 @@ use crate::seqdiag_lib_interface::internal_representation::*;
 
 impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction {
 
-    fn get_subinteractions<'a>(&'a self) -> Vec<&'a Self> {
+    fn get_subinteractions(&self) -> Vec<&Self> {
         match self {
             Interaction::Strict(i1, i2) => {
                 vec![&*i1,&*i2]

@@ -38,7 +38,8 @@ match fs::read_to_string(file_path) {
     Ok(data) => {
         match parse_interaction::
         <HibouLangCioII,GeneralContext>(
-            &data,&ctx
+            &data,
+            ctx
         ) {
             Ok(internal_repr) => {
                 let interaction = Interaction::from_io_repr(&internal_repr);

@@ -23,33 +23,33 @@ impl Ord for Interaction {
     fn cmp(&self, other: &Self) -> Ordering {
         match (self,other) {
             (Interaction::Empty,Interaction::Empty) => {
-                return Ordering::Equal;
+                Ordering::Equal
             },
             (Interaction::Empty,_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Empty) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::Emission(em1),Interaction::Emission(em2)) => {
-                return em1.cmp(em2);
+                em1.cmp(em2)
             },
             (Interaction::Emission(_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Emission(_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::Reception(rc1),Interaction::Reception(rc2)) => {
-                return rc1.cmp(rc2);
+                rc1.cmp(rc2)
             },
             (Interaction::Reception(_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Reception(_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::CoReg(self_cr,self_i1,self_i2),Interaction::CoReg(other_cr, other_i1,other_i2)) => {
@@ -77,72 +77,72 @@ impl Ord for Interaction {
                 let cmp_left = self_i1.cmp(other_i1);
                 match &cmp_left {
                     Ordering::Equal => {
-                        return self_i2.cmp(other_i2);
+                        self_i2.cmp(other_i2)
                     },
                     _ => {
-                        return cmp_left;
+                        cmp_left
                     }
                 }
             },
             (Interaction::CoReg(_,_,_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::CoReg(_,_,_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::Strict(self_i1,self_i2),Interaction::Strict(other_i1,other_i2)) => {
                 let cmp_left = self_i1.cmp(other_i1);
                 match &cmp_left {
                     Ordering::Equal => {
-                        return self_i2.cmp(other_i2);
+                        self_i2.cmp(other_i2)
                     },
                     _ => {
-                        return cmp_left;
+                        cmp_left
                     }
                 }
             },
             (Interaction::Strict(_,_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Strict(_,_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::Alt(self_i1,self_i2),Interaction::Alt(other_i1,other_i2)) => {
                 let cmp_left = self_i1.cmp(other_i1);
                 match &cmp_left {
                     Ordering::Equal => {
-                        return self_i2.cmp(other_i2);
+                        self_i2.cmp(other_i2)
                     },
                     _ => {
-                        return cmp_left;
+                        cmp_left
                     }
                 }
             },
             (Interaction::Alt(_,_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Alt(_,_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             // ***
             (Interaction::Loop(self_lk,self_i1),Interaction::Loop(other_lk,other_i1)) => {
                 let cmp_lk = self_lk.cmp(&other_lk);
                 match &cmp_lk {
                     Ordering::Equal => {
-                        return self_i1.cmp(other_i1);
+                        self_i1.cmp(other_i1)
                     },
                     _ => {
-                        return cmp_lk;
+                        cmp_lk
                     }
                 }
             },
             (Interaction::Loop(_,_),_) => {
-                return Ordering::Less;
+                Ordering::Less
             },
             (_,Interaction::Loop(_,_)) => {
-                return Ordering::Greater;
+                Ordering::Greater
             },
             /*(Interaction::Sync(self_acts,self_i1,self_i2),Interaction::Sync(other_acts,other_i1,other_i2)) => {
                 let max_acts_len = self_acts.len().max(other_acts.len());
@@ -186,10 +186,10 @@ impl Ord for Interaction {
                 let cmp_left = self_i1.cmp(other_i1);
                 match &cmp_left {
                     Ordering::Equal => {
-                        return self_i2.cmp(other_i2);
+                        self_i2.cmp(other_i2)
                     },
                     _ => {
-                        return cmp_left;
+                        cmp_left
                     }
                 }
             }

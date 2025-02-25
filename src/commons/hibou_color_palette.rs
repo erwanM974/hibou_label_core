@@ -48,51 +48,50 @@ For use with image::Rgb from the "image" crate
 
 */
 
-pub const HCP_White : [u8;3] = [255u8,  255u8,  255u8];
-pub const HCP_Black : [u8;3] = [0u8, 0u8, 0u8];
+pub const HCP_WHITE : [u8;3] = [255u8,  255u8,  255u8];
+pub const HCP_BLACK : [u8;3] = [0u8, 0u8, 0u8];
 
-pub const HCP_DarkRed : [u8;3] = [86u8, 15u8, 15u8];
-pub const HCP_StandardRed : [u8;3] = [130u8, 22u8, 22u8];
-pub const HCP_LightRed : [u8;3] = [216u8, 38u8, 38u8];
-pub const HCP_BrightRed : [u8;3] = [246u8, 85u8, 85u8];
-pub const HCP_DarkOrange : [u8;3] = [86u8, 51u8, 15u8];
-pub const HCP_StandardOrange : [u8;3] = [130u8, 76u8, 22u8];
-pub const HCP_LightOrange : [u8;3] = [216u8, 127u8, 38u8];
-pub const HCP_BrightOrange : [u8;3] = [246u8, 165u8, 85u8];
-pub const HCP_DarkYellow : [u8;3] = [86u8, 86u8, 15u8];
-pub const HCP_StandardYellow : [u8;3] = [130u8, 130u8, 22u8];
-pub const HCP_LightYellow : [u8;3] = [216u8, 216u8, 38u8];
-pub const HCP_BrightYellow : [u8;3] = [246u8, 246u8, 85u8];
-pub const HCP_DarkGreen : [u8;3] = [15u8, 86u8, 15u8];
-pub const HCP_StandardGreen : [u8;3] = [22u8, 130u8, 22u8];
-pub const HCP_LightGreen : [u8;3] = [38u8, 216u8, 38u8];
-pub const HCP_BrightGreen : [u8;3] = [85u8, 246u8, 85u8];
-pub const HCP_DarkCyan : [u8;3] = [15u8, 86u8, 86u8];
-pub const HCP_StandardCyan : [u8;3] = [22u8, 130u8, 130u8];
-pub const HCP_LightCyan : [u8;3] = [38u8, 216u8, 216u8];
-pub const HCP_BrightCyan : [u8;3] = [85u8, 246u8, 246u8];
-pub const HCP_DarkBlue : [u8;3] = [15u8, 15u8, 86u8];
-pub const HCP_StandardBlue : [u8;3] = [22u8, 22u8, 130u8];
-pub const HCP_LightBlue : [u8;3] = [38u8, 38u8, 216u8];
-pub const HCP_BrightBlue : [u8;3] = [85u8, 85u8, 246u8];
-pub const HCP_DarkPurple : [u8;3] = [62u8, 15u8, 86u8];
-pub const HCP_StandardPurple : [u8;3] = [94u8, 22u8, 130u8];
-pub const HCP_LightPurple : [u8;3] = [157u8, 38u8, 216u8];
-pub const HCP_BrightPurple : [u8;3] = [192u8, 85u8, 246u8];
-pub const HCP_DarkPink : [u8;3] = [86u8, 15u8, 74u8];
-pub const HCP_StandardPink : [u8;3] = [130u8, 22u8, 112u8];
-pub const HCP_LightPink : [u8;3] = [216u8, 38u8, 186u8];
-pub const HCP_BrightPink : [u8;3] = [246u8, 85u8, 219u8];
+pub const HCP_DARK_RED : [u8;3] = [86u8, 15u8, 15u8];
+pub const HCP_STANDARD_RED : [u8;3] = [130u8, 22u8, 22u8];
+pub const HCP_LIGHT_RED : [u8;3] = [216u8, 38u8, 38u8];
+pub const HCP_BRIGHT_RED : [u8;3] = [246u8, 85u8, 85u8];
+pub const HCP_DARK_ORANGE : [u8;3] = [86u8, 51u8, 15u8];
+pub const HCP_STANDARD_ORANGE : [u8;3] = [130u8, 76u8, 22u8];
+pub const HCP_LIGHT_ORANGE : [u8;3] = [216u8, 127u8, 38u8];
+pub const HCP_BRIGHT_ORANGE : [u8;3] = [246u8, 165u8, 85u8];
+pub const HCP_DARK_YELLOW : [u8;3] = [86u8, 86u8, 15u8];
+pub const HCP_STANDARD_YELLOW : [u8;3] = [130u8, 130u8, 22u8];
+pub const HCP_LIGHT_YELLOW : [u8;3] = [216u8, 216u8, 38u8];
+pub const HCP_BRIGHT_YELLOW : [u8;3] = [246u8, 246u8, 85u8];
+pub const HCP_DARK_GREEN : [u8;3] = [15u8, 86u8, 15u8];
+pub const HCP_STANDARD_GREEN : [u8;3] = [22u8, 130u8, 22u8];
+pub const HCP_LIGHT_GREEN : [u8;3] = [38u8, 216u8, 38u8];
+pub const HCP_BRIGHT_GREEN : [u8;3] = [85u8, 246u8, 85u8];
+pub const HCP_DARK_CYAN : [u8;3] = [15u8, 86u8, 86u8];
+pub const HCP_STANDARD_CYAN : [u8;3] = [22u8, 130u8, 130u8];
+pub const HCP_LIGHT_CYAN : [u8;3] = [38u8, 216u8, 216u8];
+pub const HCP_BRIGHT_CYAN : [u8;3] = [85u8, 246u8, 246u8];
+pub const HCP_DARK_BLUE : [u8;3] = [15u8, 15u8, 86u8];
+pub const HCP_STANDARD_BLUE : [u8;3] = [22u8, 22u8, 130u8];
+pub const HCP_LIGHT_BLUE : [u8;3] = [38u8, 38u8, 216u8];
+pub const HCP_BRIGHT_BLUE : [u8;3] = [85u8, 85u8, 246u8];
+pub const HCP_DARK_PURPLE : [u8;3] = [62u8, 15u8, 86u8];
+pub const HCP_STANDARD_PURPLE : [u8;3] = [94u8, 22u8, 130u8];
+pub const HCP_LIGHT_PURPLE : [u8;3] = [157u8, 38u8, 216u8];
+pub const HCP_BRIGHT_PURPLE : [u8;3] = [192u8, 85u8, 246u8];
+pub const HCP_DARK_PINK : [u8;3] = [86u8, 15u8, 74u8];
+pub const HCP_STANDARD_PINK : [u8;3] = [130u8, 22u8, 112u8];
+pub const HCP_LIGHT_PINK : [u8;3] = [216u8, 38u8, 186u8];
+pub const HCP_BRIGHT_PINK : [u8;3] = [246u8, 85u8, 219u8];
 
-pub const HCP_DarkGray : [u8;3] = [51u8, 51u8, 51u8];
-pub const HCP_StandardGray : [u8;3] = [76u8, 76u8, 76u8];
-pub const HCP_LightGray : [u8;3] = [127u8, 127u8, 127u8];
-pub const HCP_BrightGray : [u8;3] = [165u8, 165u8, 165u8];
+pub const HCP_DARK_GRAY : [u8;3] = [51u8, 51u8, 51u8];
+pub const HCP_STANDARD_GRAY : [u8;3] = [76u8, 76u8, 76u8];
+pub const HCP_LIGHT_GRAY : [u8;3] = [127u8, 127u8, 127u8];
+pub const HCP_BRIGHT_GRAY : [u8;3] = [165u8, 165u8, 165u8];
 
 
-pub const HC_Lifeline : [u8;3] = HCP_StandardBlue;
-pub const HC_Gate : [u8;3] = HCP_StandardPurple;
-pub const HC_Message : [u8;3] = HCP_DarkGreen;
-pub const HC_MessageKind : [u8;3] = HCP_StandardGreen;
-pub const HC_Grammar_Symbol : [u8;3] = HCP_Black;
+pub const HC_LIFELINE : [u8;3] = HCP_STANDARD_BLUE;
+pub const HC_GATE : [u8;3] = HCP_STANDARD_PURPLE;
+pub const HC_MESSAGE : [u8;3] = HCP_DARK_GREEN;
+pub const HC_GRAMMAR_SYMBOL : [u8;3] = HCP_BLACK;
 

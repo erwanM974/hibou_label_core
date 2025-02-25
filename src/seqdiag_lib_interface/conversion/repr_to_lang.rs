@@ -84,15 +84,19 @@ impl FromInternalRepresentationToInteractionTerm<HibouLangCioII> for Interaction
                             let mut receptions = broadcast.lf_targets.iter().map(
                                 |lf_id| Interaction::Reception(ReceptionAction::new( Some(gt_id),broadcast.msg_id,*lf_id,))
                             ).collect();
-                            let recs_int = Self::fold_associative_operands_recursively(&HibouOperators::Coreg(vec![]), &mut receptions);
-                            recs_int
+                            Self::fold_associative_operands_recursively(
+                                &HibouOperators::Coreg(vec![]), 
+                                &mut receptions
+                            )
                         },
                         HibouBroadcastOrigin::ENV => {
                             let mut receptions = broadcast.lf_targets.iter().map(
                                 |lf_id| Interaction::Reception(ReceptionAction::new(None, broadcast.msg_id,*lf_id))
                             ).collect();
-                            let recs_int = Self::fold_associative_operands_recursively(&HibouOperators::Coreg(vec![]), &mut receptions);
-                            recs_int
+                            Self::fold_associative_operands_recursively(
+                                &HibouOperators::Coreg(vec![]), 
+                                &mut receptions
+                            )
                         },
                         HibouBroadcastOrigin::LF(orig_lf_id) => {
                             let mut receptions = broadcast.lf_targets.iter().map(

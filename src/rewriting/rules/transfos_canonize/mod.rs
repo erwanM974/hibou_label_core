@@ -30,4 +30,5 @@ pub mod kleene_rolling;
 pub mod kleene_tightening;
 pub mod sequencing_compatibility;
 pub mod strictness_relaxation;  
+pub mod summand_inclusion;  
 

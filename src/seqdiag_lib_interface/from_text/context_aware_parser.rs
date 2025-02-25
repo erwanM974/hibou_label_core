@@ -120,11 +120,11 @@ impl GenericBroadcastParser<HibouBroadcastOrigin,usize,HibouBroadcastOrigin,Hibo
             (
                 map(
                     |x| parse_element_of_preexisting_vec_and_return_index(self.get_lf_names(),x),
-                    |l| HibouBroadcastOrigin::LF(l)
+                    HibouBroadcastOrigin::LF
                 ),
                 map(
                     |x| parse_element_of_preexisting_vec_and_return_index(self.get_gt_names(),x),
-                    |g| HibouBroadcastOrigin::GT(g)
+                    HibouBroadcastOrigin::GT
                 )
             )
         )(input)

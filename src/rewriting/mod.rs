@@ -20,14 +20,15 @@ limitations under the License.
 pub(in crate::rewriting) mod conversion;
 pub(in crate::rewriting) mod rules;
 
+pub(crate) mod draw_as_term;
+pub(crate) mod lang;
+pub(in crate::rewriting) mod loggers;
+
+
+
+
 pub mod canonize;
-pub mod draw_as_term;
-pub mod lang;
-pub mod loggers;
-
-
-
-
+pub mod metrics;
 
 
 

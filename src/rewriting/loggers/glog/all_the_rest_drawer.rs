@@ -30,7 +30,7 @@ use simple_term_rewriter::process::filtration::RewritingFiltrationResult;
 use simple_term_rewriter::process::node::RewriteNodeKind;
 use simple_term_rewriter::process::step::RewriteStepKind;
 
-use crate::commons::hibou_color_palette::{HCP_Black, HCP_StandardRed};
+use crate::commons::hibou_color_palette::{HCP_BLACK, HCP_STANDARD_RED};
 use crate::commons::util::new_image_with_colored_text;
 use crate::commons::{DRAWING_GRAPHIC_FONT, SCALE};
 use crate::rewriting::lang::HibouRewritableLangOperator;
@@ -62,16 +62,16 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOp
                 let rule = phase.rules.get(term_transformation_result.rule_index_in_phase).unwrap();
                 ColoredTextLine::new(
                     vec![
-                        (rule.get_desc(), Rgb(HCP_Black)),
-                        (format!("@"), Rgb(HCP_StandardRed)),
-                        (format!("{:}", term_transformation_result.position), Rgb(HCP_Black)),
+                        (rule.get_desc(), Rgb(HCP_BLACK)),
+                        (format!("@"), Rgb(HCP_STANDARD_RED)),
+                        (format!("{:}", term_transformation_result.position), Rgb(HCP_BLACK)),
                     ]
                 )
             },
             RewriteStepKind::GoToPhase(phase_id) => {
                 ColoredTextLine::new(
                     vec![
-                        (format!("→phase→{}", phase_id), Rgb(HCP_StandardRed))
+                        (format!("→phase→{}", phase_id), Rgb(HCP_STANDARD_RED))
                     ]
                 )
             },
@@ -135,7 +135,7 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOp
     }
     
     fn get_phase_color(&self, phase_id : usize) -> graphviz_dot_builder::colors::GraphvizColor {
-        vec![
+        [
             GraphvizColor::lightskyblue,
             GraphvizColor::lightgoldenrod1,
             GraphvizColor::seagreen1,

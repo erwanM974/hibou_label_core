@@ -14,6 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-pub mod all_the_rest_drawer;
-pub mod legend_writer;
-pub mod node_drawer;
+
+
+
+pub enum HibouGraphvizLoggerParam {
+    SeqDiag,
+    TermTree,
+    SeqDiagAndTermTree
+}
+
+impl HibouGraphvizLoggerParam {
+    pub fn has_seq_diag_repr(&self) -> bool {
+        matches!(self, Self::SeqDiag | Self::SeqDiagAndTermTree)
+    }
+    pub fn has_term_tree_repr(&self) -> bool {
+        matches!(self, Self::TermTree | Self::SeqDiagAndTermTree)
+    }
+}
+
+
+
+
+
+
+
+
+

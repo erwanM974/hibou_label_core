@@ -41,7 +41,7 @@ impl Ord for EmissionAction {
             return Ordering::Greater;
         }
         // ***
-        return Ordering::Equal;
+        Ordering::Equal
     }
 }
 
@@ -63,7 +63,7 @@ impl Ord for ReceptionAction {
             return Ordering::Greater;
         }
         // ***
-        return Ordering::Equal;
+        Ordering::Equal
     }
 }
 

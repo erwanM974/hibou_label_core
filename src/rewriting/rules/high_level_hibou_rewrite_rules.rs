@@ -125,13 +125,13 @@ impl HighLevelHibouRewriteRules {
 
             HighLevelHibouRewriteRules::FactorizeLeft => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::FactorizeLeftDistributive(Box::new(HibouDistributivityChecker{})),
+                    kind : BuiltinRewriteTransformationKind::FactorizeLeftDistributiveModuloAC(Box::new(HibouDistributivityChecker{})),
                     desc : "FactorizeLeft".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
             HighLevelHibouRewriteRules::FactorizeRight => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::FactorizeRightDistributive(Box::new(HibouDistributivityChecker{})),
+                    kind : BuiltinRewriteTransformationKind::FactorizeRightDistributiveModuloAC(Box::new(HibouDistributivityChecker{})),
                     desc : "FactorizeRight".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
