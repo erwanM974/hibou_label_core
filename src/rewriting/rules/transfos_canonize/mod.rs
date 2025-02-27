@@ -19,7 +19,6 @@ limitations under the License.
 
 
 
-pub mod associativity_checker;
 pub mod basic_alt_deduplication;
 pub mod commutative_checker_and_orderer;
 pub mod coregion_minimization;
@@ -29,6 +28,7 @@ pub mod kleene_nesting;
 pub mod kleene_rolling;
 pub mod kleene_tightening;
 pub mod sequencing_compatibility;
+pub mod strict_flush_right;
 pub mod strictness_relaxation;  
-pub mod summand_inclusion;  
+//pub mod summand_inclusion;  
 

@@ -20,6 +20,7 @@ limitations under the License.
 use common_sequence_diagram_io::conversion::repr_to_lang::FromInternalRepresentationToInteractionTerm;
 use common_sequence_diagram_io::internal_representation::InteractionInternalRepresentation;
 use common_sequence_diagram_io::to_text::context_aware_printer::ContextAwareInteractionPrinter;
+use maplit::btreeset;
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
 use crate::seqdiag_lib_interface::internal_representation::{HibouBroadcastOrigin, HibouLangCioII, HibouLeafPattern, HibouOperators};
@@ -81,9 +82,14 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
                     "seq".to_owned()
                 } else {
                     let involved = {
-                        let sub_int = sub_ints.first().unwrap();
-                        let sub_int_as_interaction = Interaction::from_io_repr(sub_int);
-                        sub_int_as_interaction.involved_lifelines()
+                        let mut involved = btreeset!{};
+                        for sub_int in sub_ints {
+                            let sub_int_as_interaction = Interaction::from_io_repr(sub_int);
+                            for lf_id in sub_int_as_interaction.involved_lifelines() {
+                                involved.insert(lf_id);
+                            }
+                        }
+                        involved
                     };
                     if involved.iter().all(|lf_id| cr.contains(lf_id)) {
                         "par".to_owned()

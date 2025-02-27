@@ -65,9 +65,9 @@ fn get_graphviz_logger_from_param(
 
 fn get_base_rules() -> Vec<Box<dyn RewriteRule<HibouRewritableLangOperator>>> {
     vec![
-            HighLevelHibouRewriteRules::FlushRight.get_low_level_rewrite_rule(),
+            HighLevelHibouRewriteRules::StrictFlushRight.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoregBasic.get_low_level_rewrite_rule(),
+            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoreg.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::CoregionMinimizationBasic.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::CoregionMinimizationKleene.get_low_level_rewrite_rule(),
             HighLevelHibouRewriteRules::EpsilonFixpoint.get_low_level_rewrite_rule(),

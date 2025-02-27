@@ -18,8 +18,9 @@ limitations under the License.
 use std::cmp::Ordering;
 use std::collections::HashSet;
 
+use simple_term_rewriter::core::term::LanguageTerm;
 use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
-use simple_term_rewriter::{builtin_trs::rules::reorder_commute::CommutativeCheckerAndOrderer, core::term::LanguageTerm};
+use simple_term_rewriter::builtin_trs::rules::modulo_ac_reorderer::ModuloAssociativePartialReorderer;
 
 use crate::core::syntax::interaction::Interaction;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
@@ -33,7 +34,7 @@ pub struct HibouCommutativeCheckerAndOrderer {
 }
 
 
-impl CommutativeCheckerAndOrderer<HibouRewritableLangOperator> for HibouCommutativeCheckerAndOrderer {
+impl ModuloAssociativePartialReorderer<HibouRewritableLangOperator> for HibouCommutativeCheckerAndOrderer {
     fn may_commute_under(
         &self,
         parent_op :&HibouRewritableLangOperator,
@@ -80,7 +81,7 @@ impl CommutativeCheckerAndOrderer<HibouRewritableLangOperator> for HibouCommutat
         op.arity()
     }
     
-    fn is_a_binary_operator_we_may_consider(
+    fn is_an_associative_partially_commutative_binary_operator_we_may_consider(
         &self,
         op : &HibouRewritableLangOperator
     ) -> bool {
@@ -97,12 +98,6 @@ impl CommutativeCheckerAndOrderer<HibouRewritableLangOperator> for HibouCommutat
         }
     }
     
-    fn is_associative(
-        &self,
-        op : &HibouRewritableLangOperator
-    ) -> bool {
-        op.is_binary_associative()
-    }
 }
 
 

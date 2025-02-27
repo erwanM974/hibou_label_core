@@ -127,13 +127,18 @@ impl FromInteractionTermToInternalRepresentation<HibouLangCioII> for Interaction
                 );
             },
             Interaction::Strict(i1, i2) => {
-                if let Some((HibouLeafPattern::BROADCAST(found_broadcast_on_the_left),rem1)) = i1.identify_pattern_at_interaction_root() {
+                if let Some(
+                    (HibouLeafPattern::BROADCAST(found_broadcast_on_the_left),rem1)
+                ) = i1.identify_pattern_at_interaction_root() {
                     if rem1.is_none() && found_broadcast_on_the_left.origin.is_lifeline() {
                         // if on the left of the strict we have a broadcast without remainders and with a known emitting lifeline
                         // ***
                         // we try to complete it on the right with another broadcast, but without known emitting lifeline
-                        if let Some((HibouLeafPattern::BROADCAST(found_broadcast_on_the_right),rem2)) = i2.identify_pattern_at_interaction_root() {
-                            if found_broadcast_on_the_right.origin == HibouBroadcastOrigin::ENV && found_broadcast_on_the_right.msg_id == found_broadcast_on_the_left.msg_id {
+                        if let Some(
+                            (HibouLeafPattern::BROADCAST(found_broadcast_on_the_right),rem2)
+                        ) = i2.identify_pattern_at_interaction_root() {
+                            if found_broadcast_on_the_right.origin == HibouBroadcastOrigin::ENV && 
+                            found_broadcast_on_the_right.msg_id == found_broadcast_on_the_left.msg_id {
                                 // here we have found a matching broadcast on the immediate right
                                 // on the right of the strict we have identified a pattern of the form "seq(l?,...)" i.e.
                                 // a broadcast pattern with no known origin and the same message

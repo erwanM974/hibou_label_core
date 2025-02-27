@@ -20,7 +20,7 @@ use simple_term_rewriter::core::rule::RewriteRule;
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
-use crate::rewriting::rules::transfos_canonize::associativity_checker::HibouAssociativityChecker;
+use crate::rewriting::rules::transfos_canonize::strict_flush_right::HibouAssocCheckerToFlushStrictRight;
 use crate::rewriting::rules::transfos_canonize::commutative_checker_and_orderer::HibouCommutativeCheckerAndOrderer;
 use crate::rewriting::rules::transfos_canonize::distributivity_checker::HibouDistributivityChecker;
 
@@ -38,10 +38,11 @@ use super::transfos_canonize::kleene_rolling::HibouKleeneRoller;
 
 pub enum HighLevelHibouRewriteRules {
 
-    FlushRight,
+    StrictFlushRight,
 
     ReorderSubInteractionsUnderAlt,
-    ReorderSubInteractionsUnderCoregBasic,
+
+    ReorderSubInteractionsUnderCoreg,
 
     // TODO: this requires further work : modulo coreg op AC: 
     // make a graph of dependencies between sub-terms under the same coreg op
@@ -78,21 +79,21 @@ impl HighLevelHibouRewriteRules {
 
     pub fn get_low_level_rewrite_rule(&self) -> Box<dyn RewriteRule<HibouRewritableLangOperator>> {
         match self {
-            HighLevelHibouRewriteRules::FlushRight => {
+            HighLevelHibouRewriteRules::StrictFlushRight => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::AssociativeFlushRight(Box::new(HibouAssociativityChecker{})),
-                    desc : "FlushRight".to_owned()
+                    kind : BuiltinRewriteTransformationKind::AssociativeFlushRight(Box::new(HibouAssocCheckerToFlushStrictRight{})),
+                    desc : "StrictFlushRight".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
             HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommutative(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:true,consider_coreg:false})),
+                    kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommuteModuloAC(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:true,consider_coreg:false})),
                     desc : "ReorderSubInteractionsUnderAlt".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
-            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoregBasic => {
+            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoreg => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommutative(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:false,consider_coreg:true})),
+                    kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommuteModuloAC(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:false,consider_coreg:true})),
                     desc : "ReorderSubInteractionsUnderCoregBasic".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
@@ -157,7 +158,7 @@ impl HighLevelHibouRewriteRules {
             },
             HighLevelHibouRewriteRules::KleeneTighteningModuloAC => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::ModuloAssociativeFlattenedTransfo(Box::new(HibouKleeneTightener{})),
+                    kind : BuiltinRewriteTransformationKind::ModuloAssociativeGenericFlattenedTransfo(Box::new(HibouKleeneTightener{})),
                     desc : "KleeneTighteningModuloAC".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
@@ -190,7 +191,7 @@ impl HighLevelHibouRewriteRules {
 
             HighLevelHibouRewriteRules::BasicAltDeduplication => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::ModuloAssociativeFlattenedTransfo(Box::new(HibouAltDeduplicator{})),
+                    kind : BuiltinRewriteTransformationKind::ModuloAssociativeGenericFlattenedTransfo(Box::new(HibouAltDeduplicator{})),
                     desc : "BasicAltDeduplication".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },

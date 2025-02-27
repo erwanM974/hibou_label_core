@@ -23,12 +23,12 @@ use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
-pub struct HibouAssociativityChecker {}
+pub struct HibouAssocCheckerToFlushStrictRight {}
 
 
-impl AssociativityChecker<HibouRewritableLangOperator> for HibouAssociativityChecker {
+impl AssociativityChecker<HibouRewritableLangOperator> for HibouAssocCheckerToFlushStrictRight {
     fn is_binary_associative(&self, op : &HibouRewritableLangOperator) -> bool {
-        op.is_binary_associative()
+        op == &HibouRewritableLangOperator::Strict
     }
 }
 

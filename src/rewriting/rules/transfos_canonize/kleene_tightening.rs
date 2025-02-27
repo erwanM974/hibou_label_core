@@ -16,7 +16,7 @@ limitations under the License.
 
 
 
-use simple_term_rewriter::{builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeFlattenedChecker, core::term::LanguageTerm};
+use simple_term_rewriter::{builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker, core::term::LanguageTerm};
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
@@ -24,7 +24,7 @@ use crate::rewriting::lang::HibouRewritableLangOperator;
 pub struct HibouKleeneTightener {}
 
 
-impl ModuloAssociativeFlattenedChecker<HibouRewritableLangOperator> for HibouKleeneTightener {
+impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for HibouKleeneTightener {
     fn is_an_associative_binary_operator_we_may_consider(
         &self, 
         op : &HibouRewritableLangOperator
