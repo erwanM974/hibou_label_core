@@ -17,7 +17,10 @@ limitations under the License.
 use graph_process_manager_core::{process::{filter::GenericFiltersManager, logger::AbstractProcessLogger, manager::GenericProcessManager}, queue::{priorities::GenericProcessPriorities, strategy::QueueSearchStrategy}};
 use graph_process_manager_loggers::graphviz::{drawers::node_drawer::CustomNodeDrawerForGraphvizLogger, format::GraphVizProcessLoggerLayout, logger::{GenericGraphVizLogger, GenericGraphVizLoggerConfiguration}};
 use graphviz_dot_builder::traits::GraphVizOutputFormat;
-use simple_term_rewriter::{core::{conversion::{from_rewritable_term::FromRewritableTermToDomainSpecificTerm, to_rewritable_term::FromDomainSpecificTermToRewritableTerm}, rule::RewriteRule}, process::{conf::RewriteConfig, context::{RewritingProcessContextAndParameterization, RewritingProcessPhase}, node::RewriteNodeKind, priorities::RewritePriorities}};
+use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm;
+use simple_term_rewriter::core::rule::RewriteRule;
+use simple_term_rewriter::rewriting_process::{conf::RewriteConfig, context::{RewritingProcessContextAndParameterization, RewritingProcessPhase}, node::RewriteNodeKind, priorities::RewritePriorities};
 
 use crate::{core::{general_context::GeneralContext, syntax::interaction::Interaction}, interfaces::HibouGraphvizLoggerParam, rewriting::loggers::glog::{all_the_rest_drawer::HibouRewritingAllTheRestDrawer, legend_writer::HibouRewritingLegendWriter, node_drawer::HibouRewritingNodeDrawer}, seqdiag_lib_interface::io::InteractionDrawingKind};
 
@@ -65,20 +68,22 @@ fn get_graphviz_logger_from_param(
 
 fn get_base_rules() -> Vec<Box<dyn RewriteRule<HibouRewritableLangOperator>>> {
     vec![
-            HighLevelHibouRewriteRules::StrictFlushRight.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoreg.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::CoregionMinimizationBasic.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::CoregionMinimizationKleene.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::EpsilonFixpoint.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::EpsilonNeutral.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::KleeneNesting.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::KleeneTighteningModuloAC.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::KleeneRolling.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
-            HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule()
+        HighLevelHibouRewriteRules::StrictFlushRight.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::AltAndCoregFlushRight.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoreg.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::CoregionMinimizationBasic.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::CoregionMinimizationKleene.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::EpsilonFixpoint.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::EpsilonNeutral.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::KleeneNesting.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::KleeneTighteningModuloAC.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::KleeneRolling.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::KleeneDesequencing.get_low_level_rewrite_rule(),
     ]
 }
 

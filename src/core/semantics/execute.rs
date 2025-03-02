@@ -111,8 +111,8 @@ fn execute_interaction_left(my_int : &Interaction,
     match my_int {
         Interaction::Alt(i1, i2) => {
             if get_affected {
-                let mut affected = i1.involved_lifelines();
-                affected.extend( i2.involved_lifelines() );
+                let mut affected = i1.lifelines_that_may_be_involved();
+                affected.extend( i2.lifelines_that_may_be_involved() );
                 let exres1 = execute_interaction( i1,sub_p1, tar_lf_ids,false);
                 return ExecutionResult::new(exres1.interaction,affected);
             } else {
@@ -123,7 +123,7 @@ fn execute_interaction_left(my_int : &Interaction,
             let exres1 = execute_interaction(i1,sub_p1,tar_lf_ids,false);
             let new_i1 = exres1.interaction;
             let affected = if get_affected {
-                i1.involved_lifelines()
+                i1.lifelines_that_may_be_involved()
             } else {
                 btreeset!{}
             };
@@ -199,8 +199,8 @@ fn execute_interaction_right(my_int : &Interaction,
     match my_int {
         Interaction::Alt(i1,i2) => {
             if get_affected {
-                let mut affected = i1.involved_lifelines();
-                affected.extend( i2.involved_lifelines() );
+                let mut affected = i1.lifelines_that_may_be_involved();
+                affected.extend( i2.lifelines_that_may_be_involved() );
                 let exres2 = execute_interaction( i2,sub_p2, tar_lf_ids,false);
                 return ExecutionResult::new(exres2.interaction,affected);
             } else {
@@ -209,7 +209,7 @@ fn execute_interaction_right(my_int : &Interaction,
         },
         Interaction::Strict(i1,i2) => {
             if get_affected {
-                let mut affected = i1.involved_lifelines();
+                let mut affected = i1.lifelines_that_may_be_involved();
                 let exres2 = execute_interaction( i2,sub_p2, tar_lf_ids,true);
                 affected.extend(exres2.affected_lifelines);
                 return ExecutionResult::new(exres2.interaction,affected);

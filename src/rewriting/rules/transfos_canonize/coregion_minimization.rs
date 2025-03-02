@@ -50,7 +50,7 @@ impl GenericUnaryOperatorSimplifier<HibouRewritableLangOperator> for HibouCoregi
                 let i1 = Interaction::from_rewritable_term(
                     term_underneath
                 );
-                i1.involved_lifelines()
+                i1.lifelines_that_may_be_involved()
             };
             // ***
             let mut new_cr = vec![];
@@ -95,14 +95,14 @@ impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouCoreg
                 let i1 = Interaction::from_rewritable_term(
                     left
                 );
-                i1.involved_lifelines()
+                i1.lifelines_that_may_be_involved()
             };
             // ***
             let involved_in_i2 = {
                 let i2 = Interaction::from_rewritable_term(
                     right
                 );
-                i2.involved_lifelines()
+                i2.lifelines_that_may_be_involved()
             };
             // ***
             let mut new_cr = vec![];

@@ -24,11 +24,12 @@ pub mod commutative_checker_and_orderer;
 pub mod coregion_minimization;
 pub mod distributivity_checker;
 pub mod empty_interaction_simplifier;
+pub mod kleene_desequencing;
 pub mod kleene_nesting;
 pub mod kleene_rolling;
 pub mod kleene_tightening;
 pub mod sequencing_compatibility;
-pub mod strict_flush_right;
+pub mod flush_right;
 pub mod strictness_relaxation;  
 //pub mod summand_inclusion;  
 

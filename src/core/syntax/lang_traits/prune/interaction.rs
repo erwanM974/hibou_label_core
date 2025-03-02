@@ -183,14 +183,14 @@ impl LifelinePrunable for Interaction {
                         return (Interaction::Alt( Box::new( pruned_i1), Box::new( pruned_i2) ), aff1);
                     } else {
                         let pruned_i1 = i1.prune(lf_ids);
-                        let mut aff = i1.involved_lifelines();
-                        aff.extend(i2.involved_lifelines());
+                        let mut aff = i1.lifelines_that_may_be_involved();
+                        aff.extend(i2.lifelines_that_may_be_involved());
                         return (pruned_i1,aff);
                     }
                 } else {
                     let pruned_i2 = i2.prune(lf_ids);
-                    let mut aff = i1.involved_lifelines();
-                    aff.extend(i2.involved_lifelines());
+                    let mut aff = i1.lifelines_that_may_be_involved();
+                    aff.extend(i2.lifelines_that_may_be_involved());
                     return (pruned_i2,aff);
                 }
             },
@@ -203,7 +203,7 @@ impl LifelinePrunable for Interaction {
                         return (Interaction::Empty,aff1);
                     }
                 }
-                return (Interaction::Empty,i1.involved_lifelines());
+                return (Interaction::Empty,i1.lifelines_that_may_be_involved());
             },
             Interaction::And(_,_) => {
                 panic!("non-conform interaction");

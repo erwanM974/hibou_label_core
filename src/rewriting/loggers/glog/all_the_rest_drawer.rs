@@ -24,11 +24,11 @@ use image::Rgb;
 use image_colored_text::text::line::ColoredTextLine;
 use image_colored_text::text::paragraph::{ColoredTextParagraph, MultiLineTextAlignment};
 
-use simple_term_rewriter::process::conf::RewriteConfig;
-use simple_term_rewriter::process::context::RewritingProcessContextAndParameterization;
-use simple_term_rewriter::process::filtration::RewritingFiltrationResult;
-use simple_term_rewriter::process::node::RewriteNodeKind;
-use simple_term_rewriter::process::step::RewriteStepKind;
+use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
+use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;
+use simple_term_rewriter::rewriting_process::filtration::RewritingFiltrationResult;
+use simple_term_rewriter::rewriting_process::node::RewriteNodeKind;
+use simple_term_rewriter::rewriting_process::step::RewriteStepKind;
 
 use crate::commons::hibou_color_palette::{HCP_BLACK, HCP_STANDARD_RED};
 use crate::commons::util::new_image_with_colored_text;

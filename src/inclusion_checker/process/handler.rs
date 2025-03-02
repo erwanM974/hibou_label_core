@@ -62,7 +62,7 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
                     parent_node.loop_depth,
                     including_candidates.clone()
                 )
-            },
+            }
         }
     }
 
@@ -70,6 +70,7 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
         _context_and_param : &InteractionInclusionCheckingContextAndParameterization,
         parent_node : &InteractionInclusionCheckingNode
     ) -> Vec<InteractionInclusionCheckingStepKind> {
+        // ***
         if let Some((smpl_included,smpl_including)) = simplify_context(
             &parent_node.included_candidate,
             &parent_node.including_candidates
@@ -89,9 +90,9 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
             None, 
             true
         );
-        let mut normalized_including_candidate = btreeset![];
+        let mut normalized_including_candidates = btreeset![];
         for cand in &parent_node.including_candidates {
-            normalized_including_candidate.insert(
+            normalized_including_candidates.insert(
                 canonize_interaction(
                         cand, 
                     None, 
@@ -99,11 +100,11 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
                 )
             );
         }
-        if normalized_included_candidate != parent_node.included_candidate || normalized_including_candidate != parent_node.including_candidates {
+        if normalized_included_candidate != parent_node.included_candidate || normalized_including_candidates != parent_node.including_candidates {
             return vec![
                 InteractionInclusionCheckingStepKind::Normalize(
                     normalized_included_candidate, 
-                    normalized_including_candidate
+                    normalized_including_candidates
                 )
                 ];
         }

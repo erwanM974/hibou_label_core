@@ -86,12 +86,24 @@ impl AbstractNodePreFilter<InteractionInclusionCheckingConfig> for InteractionIn
         _global_state : &InteractionInclusionCheckingGlobalState,
         node : &InteractionInclusionCheckingNode,
     ) -> Option<InteractionInclusionCheckingFiltrationResult> {
+        // ***
         if node.including_candidates.is_empty() {
-            return Some( InteractionInclusionCheckingFiltrationResult::NoMoreIncludingCandidates );
+            return Some( 
+                InteractionInclusionCheckingFiltrationResult::NoMoreIncludingCandidates 
+            );
+        }
+        // ***
+        // if the included candidate belongs to the set of including candidates
+        if node.including_candidates.contains(&node.included_candidate) {
+            return Some(
+                InteractionInclusionCheckingFiltrationResult::SyntaxicEqualityImpliesInclusion
+            );
         }
         if node.included_candidate.express_empty() {
             if node.including_candidates.iter().all(|x| !x.express_empty()) {
-                return Some( InteractionInclusionCheckingFiltrationResult::NoCandidateAcceptsEmptyTrace );
+                return Some( 
+                    InteractionInclusionCheckingFiltrationResult::NoCandidateAcceptsEmptyTrace 
+                );
             }
         }
         None 

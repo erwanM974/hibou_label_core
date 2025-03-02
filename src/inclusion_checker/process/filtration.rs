@@ -19,6 +19,9 @@ limitations under the License.
 use std::fmt;
 
 pub enum InteractionInclusionCheckingFiltrationResult {
+    // if the included interaction also belongs to the set of including interactions
+    SyntaxicEqualityImpliesInclusion,
+    //
     NoMoreIncludingCandidates,
     NoCandidateAcceptsEmptyTrace,
     MaxNodeNumber,
@@ -28,6 +31,9 @@ pub enum InteractionInclusionCheckingFiltrationResult {
 impl fmt::Display for InteractionInclusionCheckingFiltrationResult {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            InteractionInclusionCheckingFiltrationResult::SyntaxicEqualityImpliesInclusion => {
+                write!(f,"SyntaxicEqualityImpliesInclusion")
+            },
             InteractionInclusionCheckingFiltrationResult::NoMoreIncludingCandidates => {
                 write!(f,"NoMoreIncludingCandidates")
             },

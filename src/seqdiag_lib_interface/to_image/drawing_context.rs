@@ -238,7 +238,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                 let as_interaction : Interaction = FromInternalRepresentationToInteractionTerm::<HibouLangCioII>::from_io_repr(
                     unique_sub_int
                 );
-                as_interaction.involved_lifelines()
+                as_interaction.lifelines_that_may_be_involved()
             };
             // ***
             if involved.iter().all(|lf_id| cr.contains(lf_id)) {
@@ -271,7 +271,7 @@ impl ContextAwareInteractionDrawingInstructionsExtractor<HibouLangCioII,usize> f
                             let as_interaction : Interaction = FromInternalRepresentationToInteractionTerm::<HibouLangCioII>::from_io_repr(
                                 unique_sub_int
                             );
-                            let involved = as_interaction.involved_lifelines();
+                            let involved = as_interaction.lifelines_that_may_be_involved();
                             if involved.iter().all(|lf_id| cr.contains(lf_id)) {
                                 ColoredTextLine::new(vec![("loopP".to_owned(),Rgb(HCP_BLACK))])
                             } else {
@@ -322,9 +322,9 @@ impl ContextAwareInteractionDrawer<usize> for HibouDrawingContext {
         draw_uniform_colored_background(image,&img_width,&img_height,Rgb(HCP_WHITE));
     }
     
-    fn get_lifelines_colors(&self, involved_lifelines : &[usize]) -> HashMap<usize,Rgb<u8>> {
+    fn get_lifelines_colors(&self, lifelines_that_may_be_involved : &[usize]) -> HashMap<usize,Rgb<u8>> {
         let mut lifelines_colors = HashMap::new();
-        for lf in involved_lifelines {
+        for lf in lifelines_that_may_be_involved {
             lifelines_colors.insert(*lf,Rgb(HCP_BLACK));
         }
         lifelines_colors

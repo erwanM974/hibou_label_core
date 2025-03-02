@@ -136,14 +136,15 @@ impl CustomAllTheRestDrawerForGraphvizLogger<InteractionInclusionCheckingConfig>
         filtration_result: &InteractionInclusionCheckingFiltrationResult,
         _image_file_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
+        let filter_color = get_filtration_result_color(filtration_result);
         BuiltinGraphvizLoggerItemStyle::Default(
             BuiltinGraphvizLoggerDefaultGvItemStyle::new(
                 GvNodeShape::Rectangle,
                 filtration_result.to_string(), 
                 18, 
                 None,
-                GraphvizColor::red, 
-                GraphvizColor::red, 
+                filter_color.clone(), 
+                filter_color, 
                 GraphvizColor::wheat
             )
         )
@@ -152,9 +153,9 @@ impl CustomAllTheRestDrawerForGraphvizLogger<InteractionInclusionCheckingConfig>
     fn get_filter_edge_color(
         &self,
         _context_and_param: &InteractionInclusionCheckingContextAndParameterization,
-        _filtration_result: &InteractionInclusionCheckingFiltrationResult,
+        filtration_result: &InteractionInclusionCheckingFiltrationResult,
     ) -> graphviz_dot_builder::colors::GraphvizColor {
-        GraphvizColor::red
+        get_filtration_result_color(filtration_result)
     }
     
     fn get_node_phase_id(
@@ -173,3 +174,22 @@ impl CustomAllTheRestDrawerForGraphvizLogger<InteractionInclusionCheckingConfig>
 
 
 
+fn get_filtration_result_color(filtration_result: &InteractionInclusionCheckingFiltrationResult) -> GraphvizColor {
+    match filtration_result {
+        InteractionInclusionCheckingFiltrationResult::SyntaxicEqualityImpliesInclusion => {
+            GraphvizColor::darkgreen
+        },
+        InteractionInclusionCheckingFiltrationResult::NoMoreIncludingCandidates => {
+            GraphvizColor::red2
+        },
+        InteractionInclusionCheckingFiltrationResult::NoCandidateAcceptsEmptyTrace => {
+            GraphvizColor::red2
+        },
+        InteractionInclusionCheckingFiltrationResult::MaxNodeNumber => {
+            GraphvizColor::burlywood4
+        },
+        InteractionInclusionCheckingFiltrationResult::MaxLoopDepth => {
+            GraphvizColor::burlywood4
+        }
+    }
+}

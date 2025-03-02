@@ -19,9 +19,10 @@ use std::collections::BTreeSet;
 
 pub trait InvolvesLifelines {
 
-    fn involved_lifelines(&self) -> BTreeSet<usize>;
+    fn lifelines_that_may_be_involved(&self) -> BTreeSet<usize>;
 
-    fn involves_any_of(&self, lf_ids : &BTreeSet<usize>) -> bool;
+    fn lifelines_that_must_be_involved(&self) -> BTreeSet<usize>;
+
 }
 
 

@@ -30,45 +30,52 @@ use crate::core::syntax::interaction::Interaction;
 
 
 
+
+pub fn parse_interaction_from_text(
+    raw_str_input : &str,
+    ctx : &GeneralContext
+) -> Result<Interaction,String> {
+    match parse_interaction::
+    <HibouLangCioII,GeneralContext>(
+        raw_str_input,
+        ctx
+    ) {
+        Ok(internal_repr) => {
+            let interaction = Interaction::from_io_repr(&internal_repr);
+            Ok(interaction)
+        },
+        Err(e2) => {
+            Err(e2.to_string())
+        }
+    }
+}
+
+
+
 pub fn read_interaction_from_text_on_file(
     file_path : &Path,
     ctx : &GeneralContext
 ) -> Result<Interaction,String> {
-match fs::read_to_string(file_path) {
-    Ok(data) => {
-        match parse_interaction::
-        <HibouLangCioII,GeneralContext>(
-            &data,
-            ctx
-        ) {
-            Ok(internal_repr) => {
-                let interaction = Interaction::from_io_repr(&internal_repr);
-                Ok(interaction)
-            },
-            Err(e2) => {
-                Err(e2.to_string())
-            }
+    match fs::read_to_string(file_path) {
+        Ok(data) => {
+            parse_interaction_from_text(&data,ctx)
         }
-
+        Err(e) => {
+            Err(e.to_string())
+        }
     }
-    Err(e) => {
-        Err(e.to_string())
-    }
-}
-
 }
 
 pub fn write_interaction_as_text_on_file(
-file_path : &Path,
-ctx : &GeneralContext,
-int : &Interaction
+    file_path : &Path,
+    ctx : &GeneralContext,
+    int : &Interaction
 ) {
-
-let as_txt = print_interaction::<HibouLangCioII,GeneralContext>(
-    &int.to_io_repr(),
-    ctx
-);
-let _ = fs::write(file_path, as_txt);
+    let as_txt = print_interaction::<HibouLangCioII,GeneralContext>(
+        &int.to_io_repr(),
+        ctx
+    );
+    let _ = fs::write(file_path, as_txt);
 }
 
 
@@ -80,10 +87,10 @@ pub enum InteractionDrawingKind {
 
 
 pub fn draw_interaction_on_file(
-file_path : &Path,
-ctx : &GeneralContext,
-int : &Interaction,
-draw_kind : &InteractionDrawingKind
+    file_path : &Path,
+    ctx : &GeneralContext,
+    int : &Interaction,
+    draw_kind : &InteractionDrawingKind
 ) {
     match draw_kind {
         InteractionDrawingKind::AsSequenceDiagram => {

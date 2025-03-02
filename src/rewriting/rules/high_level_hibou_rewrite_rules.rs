@@ -20,12 +20,14 @@ use simple_term_rewriter::core::rule::RewriteRule;
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
-use crate::rewriting::rules::transfos_canonize::strict_flush_right::HibouAssocCheckerToFlushStrictRight;
+use crate::rewriting::rules::transfos_canonize::flush_right::HibouAssocCheckerToFlushStrictRight;
 use crate::rewriting::rules::transfos_canonize::commutative_checker_and_orderer::HibouCommutativeCheckerAndOrderer;
 use crate::rewriting::rules::transfos_canonize::distributivity_checker::HibouDistributivityChecker;
 
 use super::transfos_canonize::basic_alt_deduplication::HibouAltDeduplicator;
 use super::transfos_canonize::coregion_minimization::HibouCoregionMinimizer;
+use super::transfos_canonize::flush_right::HibouAssocCheckerToFlushAltCoregRight;
+use super::transfos_canonize::kleene_desequencing::HibouKleeneDesequencer;
 use super::transfos_canonize::kleene_tightening::HibouKleeneTightener;
 use super::transfos_canonize::sequencing_compatibility::HibouSequencingCompatibilizer;
 use super::transfos_canonize::strictness_relaxation::HibouStrictnessRelaxer;
@@ -39,6 +41,7 @@ use super::transfos_canonize::kleene_rolling::HibouKleeneRoller;
 pub enum HighLevelHibouRewriteRules {
 
     StrictFlushRight,
+    AltAndCoregFlushRight,
 
     ReorderSubInteractionsUnderAlt,
 
@@ -60,6 +63,7 @@ pub enum HighLevelHibouRewriteRules {
     EpsilonFixpoint,
     EpsilonNeutral,
 
+    KleeneDesequencing,
     KleeneNesting,
     KleeneTighteningModuloAC,
     KleeneRolling,
@@ -85,6 +89,12 @@ impl HighLevelHibouRewriteRules {
                     desc : "StrictFlushRight".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
+            HighLevelHibouRewriteRules::AltAndCoregFlushRight => {
+                Box::new(BuiltinRewriteTransformation{
+                    kind : BuiltinRewriteTransformationKind::AssociativeFlushRight(Box::new(HibouAssocCheckerToFlushAltCoregRight{})),
+                    desc : "AltAndCoregFlushRight".to_owned()
+                }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
+            },
             HighLevelHibouRewriteRules::ReorderSubInteractionsUnderAlt => {
                 Box::new(BuiltinRewriteTransformation{
                     kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommuteModuloAC(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:true,consider_coreg:false})),
@@ -94,7 +104,7 @@ impl HighLevelHibouRewriteRules {
             HighLevelHibouRewriteRules::ReorderSubInteractionsUnderCoreg => {
                 Box::new(BuiltinRewriteTransformation{
                     kind : BuiltinRewriteTransformationKind::ReorderOperandsIfCommuteModuloAC(Box::new(HibouCommutativeCheckerAndOrderer{consider_alt:false,consider_coreg:true})),
-                    desc : "ReorderSubInteractionsUnderCoregBasic".to_owned()
+                    desc : "ReorderSubInteractionsUnderCoreg".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
 
@@ -150,6 +160,12 @@ impl HighLevelHibouRewriteRules {
             },
 
 
+            HighLevelHibouRewriteRules::KleeneDesequencing => {
+                Box::new(BuiltinRewriteTransformation{
+                    kind : BuiltinRewriteTransformationKind::ModuloAssociativeGenericFlattenedTransfo(Box::new(HibouKleeneDesequencer{})),
+                    desc : "KleeneDesequencing".to_owned()
+                }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
+            },
             HighLevelHibouRewriteRules::KleeneNesting => {
                 Box::new(BuiltinRewriteTransformation{
                     kind : BuiltinRewriteTransformationKind::GenericSimplifyUnderUnary(Box::new(HibouKleeneNestingSimplifier{})),

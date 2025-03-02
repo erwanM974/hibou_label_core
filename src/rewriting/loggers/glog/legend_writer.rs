@@ -17,12 +17,12 @@ limitations under the License.
 use graph_process_manager_core::process::filter::{AbstractNodePostFilter, AbstractNodePreFilter, AbstractStepFilter};
 use graph_process_manager_loggers::graphviz::drawers::legend_writer::ProcessLegendWriter;
 
-use simple_term_rewriter::process::conf::RewriteConfig;
-use simple_term_rewriter::process::context::RewritingProcessContextAndParameterization;
-use simple_term_rewriter::process::filter::{RewriteNodePreFilter, RewriteStepFilter};
-use simple_term_rewriter::process::loggers::glog::legend_writer_utils::{get_rewrite_node_pre_filter_description, get_rewrite_parameters_description, get_rewrite_priorities_description, get_rewrite_step_filter_description};
-use simple_term_rewriter::process::priorities::RewritePriorities;
-use simple_term_rewriter::process::state::RewritingProcessState;
+use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
+use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;
+use simple_term_rewriter::rewriting_process::filter::{RewriteNodePreFilter, RewriteStepFilter};
+use simple_term_rewriter::rewriting_process::loggers::glog::legend_writer_utils::{get_rewrite_node_pre_filter_description, get_rewrite_parameters_description, get_rewrite_priorities_description, get_rewrite_step_filter_description};
+use simple_term_rewriter::rewriting_process::priorities::RewritePriorities;
+use simple_term_rewriter::rewriting_process::state::RewritingProcessState;
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 

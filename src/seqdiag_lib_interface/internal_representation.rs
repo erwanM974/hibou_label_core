@@ -45,6 +45,12 @@ impl HibouBroadcastOrigin {
             _ => {false}
         }
     }
+    pub fn is_environment(&self) -> bool {
+        match self {
+            HibouBroadcastOrigin::ENV => {true},
+            _ => {false}
+        }
+    }
 }
 
 

@@ -21,9 +21,9 @@ use graph_process_manager_loggers::graphviz::item::BuiltinGraphvizLoggerItemStyl
 
 use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 use simple_term_rewriter::draw_term::draw_term_tree_with_graphviz;
-use simple_term_rewriter::process::conf::RewriteConfig;
-use simple_term_rewriter::process::context::RewritingProcessContextAndParameterization;
-use simple_term_rewriter::process::node::RewriteNodeKind;
+use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
+use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;
+use simple_term_rewriter::rewriting_process::node::RewriteNodeKind;
 
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::interaction::Interaction;

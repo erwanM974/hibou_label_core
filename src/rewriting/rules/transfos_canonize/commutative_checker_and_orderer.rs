@@ -28,6 +28,23 @@ use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
 
+pub(in crate::rewriting) fn may_commute_under_coreg(
+    cr : &Vec<usize>, 
+    left_sub_term : &LanguageTerm<HibouRewritableLangOperator>,
+    right_sub_term : &LanguageTerm<HibouRewritableLangOperator>
+) -> bool {
+    let i1 = Interaction::from_rewritable_term(
+        left_sub_term
+    );
+    let i2 = Interaction::from_rewritable_term(
+        right_sub_term
+    );
+    let involved_in_both : HashSet<usize> = i1.lifelines_that_may_be_involved().intersection(&i2.lifelines_that_may_be_involved()).cloned().collect();
+    // if the concurrent region contains all the lifelines that are involved in both interactions then they may commute
+    involved_in_both.iter().all(|lf| cr.contains(lf))
+}
+
+
 pub struct HibouCommutativeCheckerAndOrderer {
     pub consider_alt : bool, 
     pub consider_coreg : bool, 
@@ -47,15 +64,7 @@ impl ModuloAssociativePartialReorderer<HibouRewritableLangOperator> for HibouCom
             },
             HibouRewritableLangOperator::CoReg(cr) => {
                 if self.consider_coreg {
-                    let i1 = Interaction::from_rewritable_term(
-                        left_sub_term
-                    );
-                    let i2 = Interaction::from_rewritable_term(
-                        right_sub_term
-                    );
-                    let involved_in_both : HashSet<usize> = i1.involved_lifelines().intersection(&i2.involved_lifelines()).cloned().collect();
-                    // if the concurrent region contains all the lifelines that are involved in both interactions then they may commute
-                    involved_in_both.iter().all(|lf| cr.contains(lf))
+                    may_commute_under_coreg(cr,left_sub_term,right_sub_term)
                 } else {
                     false
                 }

@@ -60,7 +60,7 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
                                 let as_interaction : Interaction = FromInternalRepresentationToInteractionTerm::<HibouLangCioII>::from_io_repr(
                                     unique_sub_int
                                 );
-                                as_interaction.involved_lifelines()
+                                as_interaction.lifelines_that_may_be_involved()
                             };
                             if involved.iter().all(|lf_id| cr.contains(lf_id)) {
                                 "loopP".to_owned()
@@ -85,7 +85,7 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
                         let mut involved = btreeset!{};
                         for sub_int in sub_ints {
                             let sub_int_as_interaction = Interaction::from_io_repr(sub_int);
-                            for lf_id in sub_int_as_interaction.involved_lifelines() {
+                            for lf_id in sub_int_as_interaction.lifelines_that_may_be_involved() {
                                 involved.insert(lf_id);
                             }
                         }

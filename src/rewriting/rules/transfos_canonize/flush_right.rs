@@ -34,3 +34,20 @@ impl AssociativityChecker<HibouRewritableLangOperator> for HibouAssocCheckerToFl
 
 
 
+pub struct HibouAssocCheckerToFlushAltCoregRight {}
+
+
+impl AssociativityChecker<HibouRewritableLangOperator> for HibouAssocCheckerToFlushAltCoregRight {
+    fn is_binary_associative(&self, op : &HibouRewritableLangOperator) -> bool {
+        match op {
+            HibouRewritableLangOperator::Alt => {
+                true
+            },
+            HibouRewritableLangOperator::CoReg(_) => {
+                true
+            },
+            _ => {false}
+        }
+    }
+}
+

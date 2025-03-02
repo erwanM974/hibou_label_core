@@ -30,7 +30,7 @@ use super::involves::InvolvesLifelines;
 
 
 impl InvolvesLifelines for Interaction {
-    fn involved_lifelines(&self) -> BTreeSet<usize> {
+    fn lifelines_that_may_be_involved(&self) -> BTreeSet<usize> {
         match &self {
             &Interaction::Empty => {
                 btreeset!{}
@@ -42,27 +42,27 @@ impl InvolvesLifelines for Interaction {
                 btreeset!{rc_act.targ_lf_id}
             },
             &Interaction::Strict(ref i1, ref i2) => {
-                let mut content = i1.involved_lifelines();
-                content.extend( i2.involved_lifelines() );
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
                 content
             },
             &Interaction::CoReg(_, ref i1, ref i2) => {
-                let mut content = i1.involved_lifelines();
-                content.extend( i2.involved_lifelines() );
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
                 content
             },
             /*&Interaction::Sync(_, ref i1, ref i2) => {
-                let mut content = i1.involved_lifelines();
-                content.extend( i2.involved_lifelines() );
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
                 return content;
             },*/
             &Interaction::Alt(ref i1, ref i2) => {
-                let mut content = i1.involved_lifelines();
-                content.extend( i2.involved_lifelines() );
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
                 content
             },
             &Interaction::Loop(_, i1) => {
-                i1.involved_lifelines()
+                i1.lifelines_that_may_be_involved()
             },
             &Interaction::And(_,_) => {
                 panic!("non-conform interaction");
@@ -70,35 +70,45 @@ impl InvolvesLifelines for Interaction {
         }
     }
 
-    fn involves_any_of(&self, lf_ids : &BTreeSet<usize>) -> bool {
-        match self {
+
+    fn lifelines_that_must_be_involved(&self) -> BTreeSet<usize> {
+        match &self {
             &Interaction::Empty => {
-                false
+                btreeset!{}
             },
             &Interaction::Emission(ref em_act) => {
-                lf_ids.contains(&em_act.orig_lf_id)
+                btreeset!{em_act.orig_lf_id}
             },
             &Interaction::Reception(ref rc_act) => {
-                lf_ids.contains(&rc_act.targ_lf_id)
+                btreeset!{rc_act.targ_lf_id}
             },
             &Interaction::Strict(ref i1, ref i2) => {
-                i1.involves_any_of(lf_ids) || i2.involves_any_of(lf_ids)
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
+                content
             },
             &Interaction::CoReg(_, ref i1, ref i2) => {
-                i1.involves_any_of(lf_ids) || i2.involves_any_of(lf_ids)
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
+                content
             },
             /*&Interaction::Sync(_, ref i1, ref i2) => {
-                return i1.involves_any_of(lf_ids) || i2.involves_any_of(lf_ids);
+                let mut content = i1.lifelines_that_may_be_involved();
+                content.extend( i2.lifelines_that_may_be_involved() );
+                return content;
             },*/
             &Interaction::Alt(ref i1, ref i2) => {
-                i1.involves_any_of(lf_ids) || i2.involves_any_of(lf_ids)
+                let must_i1 =  i1.lifelines_that_must_be_involved();
+                let must_i2 =  i2.lifelines_that_must_be_involved();
+                must_i1.intersection(&must_i2).into_iter().cloned().collect()
             },
-            &Interaction::Loop(_, ref i1) => {
-                i1.involves_any_of(lf_ids)
+            &Interaction::Loop(_, _) => {
+                btreeset! {}
             },
             &Interaction::And(_,_) => {
                 panic!("non-conform interaction");
             }
         }
     }
+
 }

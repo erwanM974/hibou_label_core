@@ -66,6 +66,9 @@ impl AbstractProcessMutablePersistentState<InteractionInclusionCheckingConfig> f
         filtration_result: &InteractionInclusionCheckingFiltrationResult
     ) {
         match filtration_result {
+            InteractionInclusionCheckingFiltrationResult::SyntaxicEqualityImpliesInclusion => {
+                // nothing
+            },
             InteractionInclusionCheckingFiltrationResult::NoMoreIncludingCandidates => {
                 self.inclusion_verdict = InteractionInclusionGlobalVerdict::IsNotIncluded;
             },
