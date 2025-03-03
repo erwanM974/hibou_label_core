@@ -29,18 +29,18 @@ use crate::core::syntax::interaction::Interaction;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
-use super::commutative_checker_and_orderer::may_commute_under_coreg;
+use crate::rewriting::rules::transfos_canonize::commutative_checker_and_orderer::may_commute_under_coreg;
 
 
 
 
-pub struct HibouSequencingCompatibilizer {}
+pub struct HibouRightSequencingCompatibilizer {}
 
 
 
 
 // strict(i1,seq(i2,...in)) -> seq( strict(i1,seq(is1,...,is(n-1))), isn) ) if some conditions are met
-impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouSequencingCompatibilizer {
+impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouRightSequencingCompatibilizer {
     fn is_binary(&self, op : &HibouRewritableLangOperator) -> bool {
         op.arity() == 2
     }
@@ -122,7 +122,8 @@ impl GenericBinaryOperatorSimplifier<HibouRewritableLangOperator> for HibouSeque
                             }
                             fold_associative_sub_terms_recursively(
                                 &right.operator,
-                                &mut other_sub_inteactions_except_ik
+                                &mut other_sub_inteactions_except_ik,
+                                &None
                             )
                         };
                         let new_left = LanguageTerm::new(

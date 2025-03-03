@@ -82,7 +82,8 @@ fn get_base_rules() -> Vec<Box<dyn RewriteRule<HibouRewritableLangOperator>>> {
         HighLevelHibouRewriteRules::StrictnessRelaxationBinary.get_low_level_rewrite_rule(),
         HighLevelHibouRewriteRules::StrictnessRelaxationUnary.get_low_level_rewrite_rule(),
         HighLevelHibouRewriteRules::BasicAltDeduplication.get_low_level_rewrite_rule(),
-        HighLevelHibouRewriteRules::SequencingCompatibility.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::SequencingCompatibilityLeft.get_low_level_rewrite_rule(),
+        HighLevelHibouRewriteRules::SequencingCompatibilityRight.get_low_level_rewrite_rule(),
         HighLevelHibouRewriteRules::KleeneDesequencing.get_low_level_rewrite_rule(),
     ]
 }

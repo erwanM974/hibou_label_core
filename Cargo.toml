@@ -25,6 +25,6 @@ graph_process_manager_core    = "0.2.1"      #
 graph_process_manager_loggers = "0.2.3"      #
 autour_core                   = "0.1.12"
 common_sequence_diagram_io    = { version = "0.1.8", features=["from_text", "to_text", "to_image"]}
-simple_term_rewriter          = "0.2.7"
+simple_term_rewriter          = "0.2.8"
 
 

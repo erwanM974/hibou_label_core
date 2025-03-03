@@ -15,18 +15,5 @@ limitations under the License.
 */
 
 
-
-pub mod commons;
-pub mod core;
-pub mod rewriting;
-pub mod inclusion_checker;
-pub mod seqdiag_lib_interface;
-pub mod interfaces;
-
-
-
-
-#[cfg(test)]
-mod tests;
-
-
+pub mod left_seq_compat;
+pub mod right_seq_compat;

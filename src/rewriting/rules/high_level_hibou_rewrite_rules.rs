@@ -29,7 +29,8 @@ use super::transfos_canonize::coregion_minimization::HibouCoregionMinimizer;
 use super::transfos_canonize::flush_right::HibouAssocCheckerToFlushAltCoregRight;
 use super::transfos_canonize::kleene_desequencing::HibouKleeneDesequencer;
 use super::transfos_canonize::kleene_tightening::HibouKleeneTightener;
-use super::transfos_canonize::sequencing_compatibility::HibouSequencingCompatibilizer;
+use super::transfos_canonize::sequencing_compatibility::left_seq_compat::HibouLeftSequencingCompatibilizer;
+use super::transfos_canonize::sequencing_compatibility::right_seq_compat::HibouRightSequencingCompatibilizer;
 use super::transfos_canonize::strictness_relaxation::HibouStrictnessRelaxer;
 use super::transfos_canonize::empty_interaction_simplifier::HibouEmptyInteractionSimplifier;
 use super::transfos_canonize::kleene_nesting::HibouKleeneNestingSimplifier;
@@ -71,7 +72,8 @@ pub enum HighLevelHibouRewriteRules {
     StrictnessRelaxationBinary,
     StrictnessRelaxationUnary,
 
-    SequencingCompatibility,
+    SequencingCompatibilityRight,
+    SequencingCompatibilityLeft,
 
 
     BasicAltDeduplication,
@@ -198,10 +200,16 @@ impl HighLevelHibouRewriteRules {
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
 
-            HighLevelHibouRewriteRules::SequencingCompatibility => {
+            HighLevelHibouRewriteRules::SequencingCompatibilityLeft => {
                 Box::new(BuiltinRewriteTransformation{
-                    kind : BuiltinRewriteTransformationKind::GenericSimplifyUnderBinary(Box::new(HibouSequencingCompatibilizer{})),
-                    desc : "SequencingCompatibility".to_owned()
+                    kind : BuiltinRewriteTransformationKind::GenericSimplifyUnderBinary(Box::new(HibouLeftSequencingCompatibilizer{})),
+                    desc : "SequencingCompatibilityLeft".to_owned()
+                }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
+            },
+            HighLevelHibouRewriteRules::SequencingCompatibilityRight => {
+                Box::new(BuiltinRewriteTransformation{
+                    kind : BuiltinRewriteTransformationKind::GenericSimplifyUnderBinary(Box::new(HibouRightSequencingCompatibilizer{})),
+                    desc : "SequencingCompatibilityRight".to_owned()
                 }) as Box<dyn RewriteRule<HibouRewritableLangOperator>>
             },
 

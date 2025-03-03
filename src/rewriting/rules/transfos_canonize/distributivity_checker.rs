@@ -54,6 +54,10 @@ impl DistributivityChecker<HibouRewritableLangOperator> for HibouDistributivityC
             }
         }
     }
+    
+    fn get_empty_operation_symbol(&self) -> HibouRewritableLangOperator {
+        HibouRewritableLangOperator::Empty
+    }
 }
 
 
