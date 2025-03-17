@@ -20,7 +20,6 @@ limitations under the License.
 use common_sequence_diagram_io::conversion::repr_to_lang::FromInternalRepresentationToInteractionTerm;
 use common_sequence_diagram_io::internal_representation::InteractionInternalRepresentation;
 use common_sequence_diagram_io::to_text::context_aware_printer::ContextAwareInteractionPrinter;
-use maplit::btreeset;
 use crate::core::general_context::GeneralContext;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;
 use crate::seqdiag_lib_interface::internal_representation::{HibouBroadcastOrigin, HibouLangCioII, HibouLeafPattern, HibouOperators};
@@ -81,7 +80,7 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
                 if cr.is_empty() {
                     "seq".to_owned()
                 } else {
-                    let involved = {
+                    /*let involved = {
                         let mut involved = btreeset!{};
                         for sub_int in sub_ints {
                             let sub_int_as_interaction = Interaction::from_io_repr(sub_int);
@@ -91,7 +90,8 @@ impl ContextAwareInteractionPrinter<HibouLangCioII> for GeneralContext {
                         }
                         involved
                     };
-                    if involved.iter().all(|lf_id| cr.contains(lf_id)) {
+                    if involved.iter().all(|lf_id| cr.contains(lf_id)) {*/
+                    if self.get_all_lfs_ids().iter().all(|lf_id| cr.contains(lf_id)) {
                         "par".to_owned()
                     } else {
                         let lf_names : Vec<String> = cr.iter()
