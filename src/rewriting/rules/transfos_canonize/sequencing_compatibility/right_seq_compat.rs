@@ -21,8 +21,8 @@ use std::collections::HashSet;
 use maplit::btreeset;
 use simple_term_rewriter::builtin_trs::rules::simpl_binary::GenericBinaryOperatorSimplifier;
 use simple_term_rewriter::builtin_trs::util::{fold_associative_sub_terms_recursively, get_associative_sub_terms_recursively};
-use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
-use simple_term_rewriter::core::term::LanguageTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::terms::term::LanguageTerm;
 
 use crate::core::semantics::frontier::global_frontier;
 use crate::core::syntax::interaction::Interaction;

@@ -19,7 +19,7 @@ use std::path::Path;
 use graph_process_manager_loggers::graphviz::drawers::node_drawer::CustomNodeDrawerForGraphvizLogger;
 use graph_process_manager_loggers::graphviz::item::BuiltinGraphvizLoggerItemStyle;
 
-use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 use simple_term_rewriter::draw_term::draw_term_tree_with_graphviz;
 use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
 use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;

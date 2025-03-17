@@ -18,7 +18,7 @@ use graph_process_manager_core::{process::{filter::GenericFiltersManager, logger
 use graph_process_manager_loggers::graphviz::{drawers::node_drawer::CustomNodeDrawerForGraphvizLogger, format::GraphVizProcessLoggerLayout, logger::{GenericGraphVizLogger, GenericGraphVizLoggerConfiguration}};
 use graphviz_dot_builder::traits::GraphVizOutputFormat;
 use maplit::btreeset;
-use simple_term_rewriter::{core::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm, metrics::TermMetrics};
+use simple_term_rewriter::{core::terms::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm, metrics::TermMetrics};
 
 use crate::{core::{general_context::GeneralContext, syntax::interaction::Interaction}, inclusion_checker::loggers::glog::{all_the_rest_drawer::HibouInclusionCheckingAllTheRestDrawer, legend_writer::HibouInclusionCheckingLegendWriter, node_drawer::HibouInclusionCheckingNodeDrawer}, interfaces::HibouGraphvizLoggerParam, rewriting::{lang::HibouRewritableLangOperator, metrics::InteractionTermSymbolMetrics}, seqdiag_lib_interface::io::InteractionDrawingKind};
 
@@ -124,6 +124,12 @@ pub fn check_inclusion_of_interactions(
         }
     };
 
+    let initial_node = InteractionInclusionCheckingNode::new(
+        included_candidate.clone(),
+        0,
+        btreeset! {including_candidate.clone()}
+    );
+
     let mut manager : GenericProcessManager<InteractionInclusionCheckingConfig> = GenericProcessManager::new(
         context_and_param,
         QueueSearchStrategy::BFS,
@@ -134,14 +140,11 @@ pub fn check_inclusion_of_interactions(
             vec![Box::new(InteractionInclusionCheckingStepFilter::MaxLoopInstanciation(max_loop_instanciations))]
         ),
         loggers,
-        true
+        true,
+        initial_node
     );
 
-    manager.start_process(InteractionInclusionCheckingNode::new(
-        included_candidate.clone(),
-        0,
-        btreeset! {including_candidate.clone()})
-    );
+    let _ = manager.start_process();
 
     manager.global_state.inclusion_verdict
 }

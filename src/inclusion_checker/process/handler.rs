@@ -25,6 +25,7 @@ use crate::core::syntax::interaction::Interaction;
 use crate::rewriting::{canonize::canonize_interaction, lang::HibouRewritableLangOperator};
 use maplit::btreeset;
 
+use super::state::InteractionInclusionCheckingGlobalState;
 use super::{conf::InteractionInclusionCheckingConfig, context::InteractionInclusionCheckingContextAndParameterization, node::InteractionInclusionCheckingNode, step::InteractionInclusionCheckingStepKind};
 
 pub struct InteractionInclusionCheckingHandler {}
@@ -33,8 +34,9 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
 
     fn process_new_step(
         _context_and_param : &InteractionInclusionCheckingContextAndParameterization,
+        _global_state : &mut InteractionInclusionCheckingGlobalState,
         parent_node : &InteractionInclusionCheckingNode,
-        step_to_process : &InteractionInclusionCheckingStepKind
+        step_to_process : &mut InteractionInclusionCheckingStepKind
     ) -> InteractionInclusionCheckingNode {
         match step_to_process {
             InteractionInclusionCheckingStepKind::ExecuteAction(frt_elt,next_including_candidates) => {
@@ -68,6 +70,7 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
 
     fn collect_next_steps(
         _context_and_param : &InteractionInclusionCheckingContextAndParameterization,
+        _global_state : &mut InteractionInclusionCheckingGlobalState,
         parent_node : &InteractionInclusionCheckingNode
     ) -> Vec<InteractionInclusionCheckingStepKind> {
         // ***
@@ -88,6 +91,7 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
         let normalized_included_candidate = canonize_interaction(
             &parent_node.included_candidate, 
             None, 
+            true,
             true
         );
         let mut normalized_including_candidates = btreeset![];
@@ -96,6 +100,7 @@ impl AbstractAlgorithmOperationHandler<InteractionInclusionCheckingConfig> for I
                 canonize_interaction(
                         cand, 
                     None, 
+                    true,
                     true
                 )
             );

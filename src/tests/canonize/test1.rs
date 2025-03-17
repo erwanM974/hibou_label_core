@@ -14,155 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-use crate::{core::general_context::GeneralContext, interfaces::HibouGraphvizLoggerParam, rewriting::canonize::canonize_interaction, seqdiag_lib_interface::io::parse_interaction_from_text};
-
-
-
-fn tool_test_canonize(
-        gen_ctx : GeneralContext,
-        input_text : &str, 
-        expected_interaction : &str,
-        expected_canonic : &str,
-        svg_logger : Option<&'static str>,
-        keep_only_one : bool,
-        simplified_text : &str
-    ) {
-    // we parse the input text and verifify that the obtained interaction is indeed the expected one
-    let int = parse_interaction_from_text(
-        input_text,
-        &gen_ctx
-    ).unwrap();
-    let got_int : String = format!("{:?}",int).chars().filter(|c| !c.is_whitespace()).collect();
-    assert_eq!(expected_interaction, got_int);
-
-    // we canonize the interaction and verify that it is indeed the expected one
-    let gv_log_prm = HibouGraphvizLoggerParam::SeqDiagAndTermTree;
-    let graphviz_param : Option<(&GeneralContext,&str,&HibouGraphvizLoggerParam)> = match svg_logger {
-        Some(logger_output) => {
-            Some((&gen_ctx,logger_output,&gv_log_prm))
-        },
-        None => {
-            None 
-        }
-    };
-    let canonized = canonize_interaction(
-        &int,
-        graphviz_param,
-        keep_only_one
-    );
-    let got_can : String = format!("{:?}",canonized).chars().filter(|c| !c.is_whitespace()).collect();
-    assert_eq!(expected_canonic, got_can);
-
-    // finally we parse and canonize the simplified textual version and see if we have the same thing
-    let simplified_canonic = {
-        canonize_interaction(
-            &parse_interaction_from_text(
-                simplified_text,
-                &gen_ctx
-            ).unwrap(),
-            None,
-            true
-        )
-    };
-    assert_eq!(canonized,simplified_canonic);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-fn get_gen_ctx() -> GeneralContext {
-    GeneralContext::new(
-        vec![
-            "l1".to_string(),
-            "l2".to_string(),
-            "l3".to_string(),
-        ], 
-        vec![
-            "m1".to_string(),
-            "m2".to_string(),
-            "m3".to_string(),
-        ],
-        vec![]
-    )
-}
-
-
-#[test]
-pub fn test_undisturbed_alt_factorize() {
-
-    let gen_ctx = get_gen_ctx();
-    let input_text = r#"
-seq(
-        l1 -- m1 -> l2,
-        alt(
-                l2 -- m2 -> l1,
-                0
-        )
-)
-    "#;
-
-    let simplified_text = r#"
-seq(
-        l1 -- m1 -> l2,
-        alt(
-                l2 -- m2 -> l1,
-                0
-        )
-)
-    "#;
-
-    let expected_int : String = r#"
-CoReg([],
-    Strict(
-        Emission(EmissionAction{orig_lf_id:0,ms_id:0,target_gates:[]}),
-        Reception(ReceptionAction{origin_gate:None,ms_id:0,targ_lf_id:1})
-    ),
-    Alt(
-        Strict(
-            Emission(EmissionAction{orig_lf_id:1,ms_id:1,target_gates:[]}),
-            Reception(ReceptionAction{origin_gate:None,ms_id:1,targ_lf_id:0})
-        ),
-        Empty
-    )
-)
-    "#.chars().filter(|c| !c.is_whitespace()).collect();
-
-    let expected_canonized : String = r#"
-CoReg([],
-    Strict(
-        Emission(EmissionAction{orig_lf_id:0,ms_id:0,target_gates:[]}),
-        Reception(ReceptionAction{origin_gate:None,ms_id:0,targ_lf_id:1})
-    ),
-    Alt(
-        Empty,
-        Strict(
-            Emission(EmissionAction{orig_lf_id:1,ms_id:1,target_gates:[]}),
-            Reception(ReceptionAction{origin_gate:None,ms_id:1,targ_lf_id:0})
-        )
-    )
-)
-    "#.chars().filter(|c| !c.is_whitespace()).collect();
-
-    tool_test_canonize(
-        gen_ctx,
-        input_text,
-        &expected_int,
-        &expected_canonized,
-        None,//Some("test1"),
-        true,
-        &simplified_text
-    )
-}
+use super::util::{get_gen_ctx, tool_test_canonize};
 
 
 
@@ -233,8 +85,8 @@ Loop(SStrictSeq,
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -299,8 +151,8 @@ Loop(Coreg([]),
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -377,8 +229,8 @@ CoReg([0],
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -467,8 +319,8 @@ CoReg([],
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -477,6 +329,60 @@ CoReg([],
 
 
 
+
+#[test]
+pub fn test_kleene_desequencing_undisturbed() {
+
+    let gen_ctx = get_gen_ctx();
+    let input_text = r#"
+seq(
+    loopS(
+        l1 -- m1 -> l3
+    ),
+    l3 -- m3 -> l1,
+    loopS(
+        l1 -- m2 -> l3
+    )
+)
+    "#;
+
+    let simplified_text = input_text;
+
+    let expected_int : String = r#"
+CoReg([],
+    Loop(SStrictSeq,
+        Strict(
+            Emission(EmissionAction{orig_lf_id:0,ms_id:0,target_gates:[]}),
+            Reception(ReceptionAction{origin_gate:None,ms_id:0,targ_lf_id:2})
+        )
+    ),
+    CoReg([],
+        Strict(
+            Emission(EmissionAction{orig_lf_id:2,ms_id:2,target_gates:[]}),
+            Reception(ReceptionAction{origin_gate:None,ms_id:2,targ_lf_id:0})
+        ),
+        Loop(SStrictSeq,
+            Strict(
+                Emission(EmissionAction{orig_lf_id:0,ms_id:1,target_gates:[]}),
+                Reception(ReceptionAction{origin_gate:None,ms_id:1,targ_lf_id:2})
+            )
+        )
+    )
+)
+    "#.chars().filter(|c| !c.is_whitespace()).collect();
+
+    let expected_canonized : String = expected_int.clone();
+
+    tool_test_canonize(
+        gen_ctx,
+        input_text,
+        Some(&expected_int),
+        Some(&expected_canonized),
+        None,
+        true,
+        simplified_text
+    )
+}
 
 
 
@@ -547,8 +453,8 @@ CoReg([],
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -607,8 +513,8 @@ CoReg([],
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -682,8 +588,8 @@ CoReg([],
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -748,8 +654,8 @@ Loop(Coreg([]),
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
@@ -785,11 +691,16 @@ Loop(SStrictSeq,
     tool_test_canonize(
         gen_ctx,
         input_text,
-        &expected_int,
-        &expected_canonized,
+        Some(&expected_int),
+        Some(&expected_canonized),
         None,
         true,
         simplified_text
     )
 }
+
+
+
+
+
 

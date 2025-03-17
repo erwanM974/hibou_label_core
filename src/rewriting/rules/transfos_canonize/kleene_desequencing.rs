@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 
-use simple_term_rewriter::{builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker, core::{conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm, term::LanguageTerm}};
+use simple_term_rewriter::builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker; 
+use simple_term_rewriter::core::terms::term::LanguageTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 
 use crate::{core::syntax::interaction::{Interaction, LoopKind}, inclusion_checker::check_inclusion::{check_inclusion_of_interactions, InteractionInclusionGlobalVerdict}, rewriting::lang::HibouRewritableLangOperator};
 
@@ -43,11 +45,10 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         }
     }
 
-    fn if_required_is_a_parent_unary_operator_we_may_consider(
+    fn requires_a_specific_parent_operator(
         &self,
-        _op : &HibouRewritableLangOperator
-    ) -> Option<bool> {
-        None 
+    ) -> Option<Box<dyn Fn(&HibouRewritableLangOperator) -> bool>> {
+        None
     }
 
     fn transform_flattened_sub_terms(
@@ -55,9 +56,9 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         considered_ac_op : &HibouRewritableLangOperator, 
         _considered_parent_op : Option<&HibouRewritableLangOperator>,
         flattened_subterms : Vec<&LanguageTerm<HibouRewritableLangOperator>>
-    ) -> Option<(Option<HibouRewritableLangOperator>,Vec<LanguageTerm<HibouRewritableLangOperator>>)> {
+    ) -> Option<Vec<LanguageTerm<HibouRewritableLangOperator>>> {
         // example transformation:
-        // seq(i1,loopW(i2),loopW(i2),i3) -> seq(i1,loop(i2),i3)
+        // seq(i1,loopW(i2),loopW(i2),i3) -> seq(i1,loopW(i2),i3)
 
         if let Some((earlier_to_remove, later_to_remove, new_loop, index_to_add)) = try_merge_loops_in_sequence_of_sub_interactions(
             considered_ac_op,&flattened_subterms
@@ -69,7 +70,7 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
                 }
             }
             new_flattened_sub_terms.insert(index_to_add - 1, new_loop);
-            return Some((None,new_flattened_sub_terms));
+            return Some(new_flattened_sub_terms);
         }
 
         None
@@ -121,6 +122,8 @@ fn try_merge_loops_in_sequence_of_sub_interactions(
                                     ).unwrap();
                                     if may_commute_under_coreg(cr, just_before_later, later_sub_int) {
                                         later_index_up_to_commutations -= 1;
+                                    } else {
+                                        break 'try_make_consecutive;
                                     }
                                 } 
                             }

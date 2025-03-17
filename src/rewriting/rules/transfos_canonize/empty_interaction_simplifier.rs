@@ -16,7 +16,8 @@ limitations under the License.
 
 
 
-use simple_term_rewriter::{builtin_trs::rules::{simpl_binary::GenericBinaryOperatorSimplifier, simpl_unary::GenericUnaryOperatorSimplifier}, core::term::LanguageTerm};
+use simple_term_rewriter::builtin_trs::rules::{simpl_binary::GenericBinaryOperatorSimplifier, simpl_unary::GenericUnaryOperatorSimplifier};
+use simple_term_rewriter::core::terms::term::LanguageTerm;
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 

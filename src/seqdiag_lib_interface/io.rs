@@ -69,10 +69,11 @@ pub fn read_interaction_from_text_on_file(
 pub fn write_interaction_as_text_on_file(
     file_path : &Path,
     ctx : &GeneralContext,
-    int : &Interaction
+    int : &Interaction, 
+    merge_patterns : bool
 ) {
     let as_txt = print_interaction::<HibouLangCioII,GeneralContext>(
-        &int.to_io_repr(),
+        &int.to_io_repr(merge_patterns),
         ctx
     );
     let _ = fs::write(file_path, as_txt);
@@ -96,7 +97,7 @@ pub fn draw_interaction_on_file(
         InteractionDrawingKind::AsSequenceDiagram => {
             let draw_ctx = HibouDrawingContext::new(ctx.clone());
             draw_interaction_as_sequence_diagram::<HibouLangCioII,usize,HibouDrawingContext,HibouDrawingContext>(
-                &int.to_io_repr(),
+                &int.to_io_repr(true),
                 &draw_ctx,
                 &draw_ctx,
                 file_path

@@ -18,8 +18,8 @@ limitations under the License.
 
 use simple_term_rewriter::builtin_trs::rules::simpl_binary::GenericBinaryOperatorSimplifier;
 use simple_term_rewriter::builtin_trs::rules::simpl_unary::GenericUnaryOperatorSimplifier;
-use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
-use simple_term_rewriter::core::term::LanguageTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::terms::term::LanguageTerm;
 
 use crate::core::syntax::interaction::LoopKind;
 use crate::core::syntax::lang_traits::involve::involves::InvolvesLifelines;

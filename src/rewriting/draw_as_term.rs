@@ -18,7 +18,7 @@ limitations under the License.
 use std::path::Path;
 
 use graphviz_dot_builder::item::node::style::{GraphvizNodeStyle, GraphvizNodeStyleItem, GvNodeShape};
-use simple_term_rewriter::core::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm;
+use simple_term_rewriter::core::terms::conversion::to_rewritable_term::FromDomainSpecificTermToRewritableTerm;
 use simple_term_rewriter::draw_term::TermDrawingContext;
 use simple_term_rewriter::draw_term::draw_term_tree_with_graphviz;
 

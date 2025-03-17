@@ -18,8 +18,8 @@ limitations under the License.
 use std::cmp::Ordering;
 use std::collections::HashSet;
 
-use simple_term_rewriter::core::term::LanguageTerm;
-use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::terms::term::LanguageTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 use simple_term_rewriter::builtin_trs::rules::modulo_ac_reorderer::ModuloAssociativePartialReorderer;
 
 use crate::core::syntax::interaction::Interaction;

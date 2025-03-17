@@ -16,8 +16,8 @@ limitations under the License.
 
 
 
-use simple_term_rewriter::{builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker, core::term::LanguageTerm};
-
+use simple_term_rewriter::builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker;
+use simple_term_rewriter::core::terms::term::LanguageTerm;
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
 
@@ -32,15 +32,23 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         op == &HibouRewritableLangOperator::Alt
     }
 
-    fn if_required_is_a_parent_unary_operator_we_may_consider(
+
+    fn requires_a_specific_parent_operator(
         &self,
-        op : &HibouRewritableLangOperator
-    ) -> Option<bool> {
-        if let HibouRewritableLangOperator::Loop(_) = op {
-            Some(true)
-        } else {
-            Some(false)
-        }
+    ) -> Option<Box<dyn Fn(&HibouRewritableLangOperator) -> bool>> {
+        Some(
+            Box::new(
+                |x| match x {
+                    HibouRewritableLangOperator::Loop(_) => {
+                        true
+                    },
+                    _ => {
+                        false
+                    }
+                }
+            )
+
+        )
     }
 
     fn transform_flattened_sub_terms(
@@ -48,7 +56,7 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         _considered_ac_op : &HibouRewritableLangOperator, 
         considered_parent_op : Option<&HibouRewritableLangOperator>,
         flattened_subterms : Vec<&LanguageTerm<HibouRewritableLangOperator>>
-    ) -> Option<(Option<HibouRewritableLangOperator>,Vec<LanguageTerm<HibouRewritableLangOperator>>)> {
+    ) -> Option<Vec<LanguageTerm<HibouRewritableLangOperator>>> {
         if let HibouRewritableLangOperator::Loop(lk_outer) = considered_parent_op.unwrap() {
             // ***
             let mut made_at_least_one_simplification = false;
@@ -69,12 +77,7 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
             }
             // ***
             return if made_at_least_one_simplification {
-                Some(
-                    (
-                        Some(HibouRewritableLangOperator::Loop(lk_outer.clone())),
-                        new_flattened_subterms
-                    )
-                )
+                Some(new_flattened_subterms)
             } else {
                 None 
             };

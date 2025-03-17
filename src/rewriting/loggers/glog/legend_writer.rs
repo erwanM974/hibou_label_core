@@ -20,7 +20,7 @@ use graph_process_manager_loggers::graphviz::drawers::legend_writer::ProcessLege
 use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
 use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;
 use simple_term_rewriter::rewriting_process::filter::{RewriteNodePreFilter, RewriteStepFilter};
-use simple_term_rewriter::rewriting_process::loggers::glog::legend_writer_utils::{get_rewrite_node_pre_filter_description, get_rewrite_parameters_description, get_rewrite_priorities_description, get_rewrite_step_filter_description};
+use simple_term_rewriter::rewriting_process::loggers::glog::legend_writer_utils::{get_rewrite_node_pre_filter_description, get_rewrite_parameters_description, get_rewrite_step_filter_description};
 use simple_term_rewriter::rewriting_process::priorities::RewritePriorities;
 use simple_term_rewriter::rewriting_process::state::RewritingProcessState;
 
@@ -41,8 +41,8 @@ impl ProcessLegendWriter<RewriteConfig<HibouRewritableLangOperator>> for HibouRe
         get_rewrite_parameters_description(context_and_param)
     }
 
-    fn get_priorities_description(&self, priorities : &RewritePriorities) -> Vec<Vec<String>> {
-        get_rewrite_priorities_description(priorities)
+    fn get_priorities_description(&self, _priorities : &RewritePriorities) -> Vec<Vec<String>> {
+        vec![]
     }
 
     fn get_step_filter_description(&self, filter : &dyn AbstractStepFilter<RewriteConfig<HibouRewritableLangOperator>>) -> Option<Vec<String>> {

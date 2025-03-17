@@ -20,13 +20,12 @@ use graph_process_manager_loggers::graphviz::drawers::all_the_rest_drawer::Custo
 use graph_process_manager_loggers::graphviz::item::{BuiltinGraphvizLoggerDefaultGvItemStyle, BuiltinGraphvizLoggerItemStyle};
 use graphviz_dot_builder::colors::GraphvizColor;
 use graphviz_dot_builder::item::node::style::GvNodeShape;
-use image::Rgb;
-use image_colored_text::text::line::ColoredTextLine;
-use image_colored_text::text::paragraph::{ColoredTextParagraph, MultiLineTextAlignment};
+
 
 use simple_term_rewriter::rewriting_process::conf::RewriteConfig;
 use simple_term_rewriter::rewriting_process::context::RewritingProcessContextAndParameterization;
 use simple_term_rewriter::rewriting_process::filtration::RewritingFiltrationResult;
+use simple_term_rewriter::rewriting_process::loggers::glog::all_the_rest_drawer_utils::get_step_node_inner_style_as_image_paragraph;
 use simple_term_rewriter::rewriting_process::node::RewriteNodeKind;
 use simple_term_rewriter::rewriting_process::step::RewriteStepKind;
 
@@ -56,31 +55,11 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOp
         step : &RewriteStepKind<HibouRewritableLangOperator>,
         full_path : &Path
     ) -> BuiltinGraphvizLoggerItemStyle {
-        let line = match step {
-            RewriteStepKind::Transform(term_transformation_result) => {
-                let phase = context_and_param.phases.get(term_transformation_result.phase_index).unwrap();
-                let rule = phase.rules.get(term_transformation_result.rule_index_in_phase).unwrap();
-                ColoredTextLine::new(
-                    vec![
-                        (rule.get_desc(), Rgb(HCP_BLACK)),
-                        (format!("@"), Rgb(HCP_STANDARD_RED)),
-                        (format!("{:}", term_transformation_result.position), Rgb(HCP_BLACK)),
-                    ]
-                )
-            },
-            RewriteStepKind::GoToPhase(phase_id) => {
-                ColoredTextLine::new(
-                    vec![
-                        (format!("→phase→{}", phase_id), Rgb(HCP_STANDARD_RED))
-                    ]
-                )
-            },
-        };
-        let para = ColoredTextParagraph::new(
-            vec!(line),
-            MultiLineTextAlignment::Center,
-            None,
-            None
+        let para = get_step_node_inner_style_as_image_paragraph(
+            context_and_param,
+            step,
+            HCP_BLACK,
+            HCP_STANDARD_RED
         );
         new_image_with_colored_text(
             full_path,
@@ -131,7 +110,7 @@ impl CustomAllTheRestDrawerForGraphvizLogger<RewriteConfig<HibouRewritableLangOp
         _context_and_param: &RewritingProcessContextAndParameterization<HibouRewritableLangOperator>,
         new_node: &RewriteNodeKind<HibouRewritableLangOperator>
     ) -> Option<usize> {
-        Some(new_node.rewrite_system_index)
+        Some(new_node.concrete_rewrite_phase_index)
     }
     
     fn get_phase_color(&self, phase_id : usize) -> graphviz_dot_builder::colors::GraphvizColor {

@@ -18,8 +18,8 @@ limitations under the License.
 
 
 
-use simple_term_rewriter::{builtin_trs::rules::simpl_binary::GenericBinaryOperatorSimplifier, core::term::LanguageTerm};
-
+use simple_term_rewriter::builtin_trs::rules::simpl_binary::GenericBinaryOperatorSimplifier;
+use simple_term_rewriter::core::terms::term::LanguageTerm;
 use crate::core::syntax::interaction::LoopKind;
 use crate::rewriting::lang::HibouRewritableLangOperator;
 

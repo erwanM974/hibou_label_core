@@ -37,7 +37,8 @@ pub struct InteractionInclusionCheckingGlobalState {
 
 impl AbstractProcessMutablePersistentState<InteractionInclusionCheckingConfig> for InteractionInclusionCheckingGlobalState {
     fn get_initial_state(
-        _context_and_param: &InteractionInclusionCheckingContextAndParameterization
+        _context_and_param: &InteractionInclusionCheckingContextAndParameterization,
+        _initial_node : &InteractionInclusionCheckingNode
     ) -> Self {
         Self{inclusion_verdict : InteractionInclusionGlobalVerdict::IsIncluded, node_count : 0}
     }

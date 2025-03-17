@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-use simple_term_rewriter::core::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
+use simple_term_rewriter::core::terms::conversion::from_rewritable_term::FromRewritableTermToDomainSpecificTerm;
 
 use crate::core::syntax::interaction::Interaction;
 use crate::rewriting::lang::HibouRewritableLangOperator;

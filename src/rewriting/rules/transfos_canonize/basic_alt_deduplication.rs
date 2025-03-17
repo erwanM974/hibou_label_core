@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-use simple_term_rewriter::{builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker, core::term::LanguageTerm};
+use simple_term_rewriter::core::terms::term::LanguageTerm;
+use simple_term_rewriter::builtin_trs::rules::modulo_associative_flattened_transfo::ModuloAssociativeGenericFlattenedChecker; 
 
 use crate::rewriting::lang::HibouRewritableLangOperator;
 
@@ -30,10 +31,9 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         op == &HibouRewritableLangOperator::Alt
     }
 
-    fn if_required_is_a_parent_unary_operator_we_may_consider(
+    fn requires_a_specific_parent_operator(
         &self,
-        _op : &HibouRewritableLangOperator
-    ) -> Option<bool> {
+    ) -> Option<Box<dyn Fn(&HibouRewritableLangOperator) -> bool>> {
         None
     }
 
@@ -42,7 +42,7 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
         _considered_ac_op : &HibouRewritableLangOperator, 
         _considered_parent_op : Option<&HibouRewritableLangOperator>,
         flattened_subterms : Vec<&LanguageTerm<HibouRewritableLangOperator>>
-    ) -> Option<(Option<HibouRewritableLangOperator>,Vec<LanguageTerm<HibouRewritableLangOperator>>)> {
+    ) -> Option<Vec<LanguageTerm<HibouRewritableLangOperator>>> {
         let mut new_flattened_subterms : Vec<LanguageTerm<HibouRewritableLangOperator>> = vec![];
         for sub_term in &flattened_subterms {
             if !new_flattened_subterms.contains(*sub_term) {
@@ -50,7 +50,7 @@ impl ModuloAssociativeGenericFlattenedChecker<HibouRewritableLangOperator> for H
             }
         }
         if new_flattened_subterms.len() < flattened_subterms.len() {
-            Some((None,new_flattened_subterms))
+            Some(new_flattened_subterms)
         } else {
             None 
         }
